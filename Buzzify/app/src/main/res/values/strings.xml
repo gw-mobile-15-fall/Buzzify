@@ -9,4 +9,5 @@
     <string name="signin">Sign In</string>
     <string name="register">Register</string>
     <string name="forgot_password">Forgot Your Password?</string>
+    <string name="loginErrorMsg">Your username and/or password was incorrect. Please try again.</string>
 </resources>
