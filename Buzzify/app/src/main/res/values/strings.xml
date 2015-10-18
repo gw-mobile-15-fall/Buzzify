@@ -8,6 +8,8 @@
     <string name="password">Password</string>
     <string name="signin">Sign In</string>
     <string name="register">Register</string>
+    <string name="register_error_msg">Sorry, we are unable to accept new registrations at this time.  Please try again later.</string>
     <string name="forgot_password">Forgot Your Password?</string>
     <string name="loginErrorMsg">Your username and/or password was incorrect. Please try again.</string>
+
 </resources>

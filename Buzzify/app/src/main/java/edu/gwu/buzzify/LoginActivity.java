@@ -14,13 +14,17 @@ import android.widget.Toast;
 
 public class LoginActivity extends AppCompatActivity {
     private CardView mBtnSignIn;
-    private Button mBtnRegister;
+    private CardView mBtnRegister;
     private String mUserName;
     private String mPassword;
     private static final String TAG = "LoginActivity";
 
     private boolean credsAreValid() {
-        if (!(mUserName.matches(getResources().getString(R.string.username)) && mPassword.matches(getResources().getString(R.string.password)))){
+
+        String validUser = getResources().getString(R.string.username);
+        String validPass = getResources().getString(R.string.password);
+
+        if ((mUserName.matches(validUser) && mPassword.matches(validPass))) {
             return true;
         }
 
@@ -52,33 +56,15 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
-        /*
 
-        mBtnSignIn.setOnClickListener(new View.OnClickListener() {
+        mBtnRegister = (CardView) findViewById(R.id.btnRegister);
+        mBtnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (v == mBtnSignIn) {
-                    TextView userText = (TextView) findViewById(R.id.etUsername);
-                    mUserName = userText.getText().toString();
-
-                    TextView passwordText = (TextView) findViewById(R.id.etPassword);
-                    mPassword = passwordText.getText().toString();
-
-                    //Check for correct login credentials. Display error if invalid.
-                    if (!(mUserName.matches(getResources().getString(R.string.username)) && mPassword.matches(getResources().getString(R.string.password)))){
-                        Toast.makeText(LoginActivity.this, R.string.loginErrorMsg, Toast.LENGTH_SHORT).show();
-                    }
-
-                    //Change to location view.
-                    Intent intentLocation = new Intent(LoginActivity.this, LoginActivity.class);
-                    LoginActivity.this.startActivity(intentLocation);
-                }
-
+                Toast.makeText(LoginActivity.this, R.string.register_error_msg, Toast.LENGTH_SHORT).show();
             }
         });
-
-        */
+        
     }
 
 
