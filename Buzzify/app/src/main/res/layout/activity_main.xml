@@ -19,7 +19,11 @@
         android:orientation="vertical">
 
 
-        <!-- Figure out how the Google Places API works before
-        making the UI. Maybe it has a custom view we can use-->
+        <!-- Placeholder for Main Menu Activity-->
+        <TextView
+            android:id="@+id/tvPlaceholder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"/>
         </LinearLayout>
 </LinearLayout>

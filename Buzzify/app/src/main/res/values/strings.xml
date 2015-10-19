@@ -12,4 +12,6 @@
     <string name="forgot_password">Forgot Your Password?</string>
     <string name="loginErrorMsg">Your username and/or password was incorrect. Please try again.</string>
 
+    <string name="play_services_failed_connection">Could Not Connect to Google Play Services</string>
+    <string name="retry">Retry</string>
 </resources>

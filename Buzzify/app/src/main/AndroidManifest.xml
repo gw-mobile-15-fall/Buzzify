@@ -2,11 +2,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="edu.gwu.buzzify" >
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyD-16Q1lD7DVALfIXg7iNuLtO1r6UkwM5E" />
+
         <activity
             android:name=".LoginActivity"
             android:label="@string/app_name" >
@@ -20,7 +27,11 @@
         <activity
             android:name=".LocationActivity"
             android:label="@string/app_name">
+        </activity>
 
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name">
         </activity>
     </application>
 
