@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.parse.Parse;
+
 public class LoginActivity extends AppCompatActivity {
     private CardView mBtnSignIn;
     private CardView mBtnRegister;
