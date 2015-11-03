@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,6 +84,10 @@ public class MainActivity extends AppCompatActivity {
     private void createPlaceholderDrinks(List<DrinkInfo> output){
         for(int i = 0; i < 10; i++)
             output.add(new DrinkInfo(getString(R.string.placeholder_drink), null));
+    }
+
+    public void onClick(View v){
+
     }
 }
 
