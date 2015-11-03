@@ -26,6 +26,13 @@
     <string name="placeholder_album">Placeholder Album</string>
     <string name="placeholder_drink">Placeholder Drink</string>
 
+
+    <string name="profile_logo_content_description">Logo</string>
+    <string name="profile_title_logged_in">Your are logged in as</string>
+    <string name="profile_logout_button_label">Log out</string>
+    <string name="profile_title_logged_out">You must be logged in to view your profile</string>
+    <string name="profile_login_button_label">Log in</string>
+
     <string name="parse_app_id">0nZ8CuhAGPGo5Eq14w6lUBszJY6uD02CtojuN3dw</string>
     <string name="parse_client_key">FfAbDNX5GdbZERQv07PFeKshZWXKiCty4G9TDJkS</string>
 

@@ -1,5 +1,6 @@
 package edu.gwu.buzzify;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -7,69 +8,113 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.Parse;
+import com.parse.ParseUser;
+import com.parse.ui.ParseLoginBuilder;
 
-public class LoginActivity extends AppCompatActivity {
-    private CardView mBtnSignIn;
-    private CardView mBtnRegister;
-    private String mUserName;
-    private String mPassword;
+public class LoginActivity extends Activity {
     private static final String TAG = "LoginActivity";
 
-    private boolean credsAreValid() {
+    private static final int LOGIN_REQUEST = 0;
 
-        String validUser = getResources().getString(R.string.username);
-        String validPass = getResources().getString(R.string.password);
+    private TextView titleTextView;
+    private TextView emailTextView;
+    private TextView nameTextView;
+    private Button loginOrLogoutButton;
 
-        if ((mUserName.matches(validUser) && mPassword.matches(validPass))) {
-            return true;
-        }
-
-        return false;
-    }
+    private ParseUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+
 
         //Set the ActionBar for pre-Lollipop devices
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
 
-        mBtnSignIn = (CardView) findViewById(R.id.btnSignIn);
-        mBtnSignIn.setOnClickListener(new View.OnClickListener() {
+        //Setup Parse
+        Parse.initialize(this);
+        Parse.setLogLevel(Parse.LOG_LEVEL_DEBUG);
+
+        setContentView(R.layout.activity_login);
+        titleTextView = (TextView) findViewById(R.id.profile_title);
+        emailTextView = (TextView) findViewById(R.id.profile_email);
+        nameTextView = (TextView) findViewById(R.id.profile_name);
+        loginOrLogoutButton = (Button) findViewById(R.id.login_or_logout_button);
+        titleTextView.setText(R.string.profile_title_logged_in);
+
+        loginOrLogoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mUserName = ((EditText) findViewById(R.id.etUsername)).getText().toString();
-                mPassword = ((EditText) findViewById(R.id.etPassword)).getText().toString();
-
-                if (credsAreValid()) {
-                    //Change to location view.
-                    Intent intentLocation = new Intent(LoginActivity.this, LocationActivity.class);
-                    LoginActivity.this.startActivity(intentLocation);
-
+                if (currentUser != null) {
+                    // User clicked to log out.
+                    ParseUser.logOut();
+                    currentUser = null;
+                    showProfileLoggedOut();
                 } else {
-                    Toast.makeText(LoginActivity.this, R.string.loginErrorMsg, Toast.LENGTH_SHORT).show();
+                    // User clicked to log in.
+                    // This example customizes ParseLoginActivity in code.
+                    ParseLoginBuilder builder = new ParseLoginBuilder(
+                            LoginActivity.this);
+                    Intent parseLoginIntent = builder.setParseLoginEnabled(true)
+                            .setParseLoginButtonText("Go")
+                            .setParseSignupButtonText("Register")
+                            .setParseLoginHelpText("Forgot password?")
+                            .setParseLoginInvalidCredentialsToastText("You email and/or password is not correct")
+                            .setParseLoginEmailAsUsername(true)
+                            .setParseSignupSubmitButtonText("Submit registration")
+                            .setFacebookLoginEnabled(false)
+                            .setTwitterLoginEnabled(false)
+                            .build();
+                    startActivityForResult(parseLoginIntent, LOGIN_REQUEST);
                 }
             }
         });
+    }
 
-        mBtnRegister = (CardView) findViewById(R.id.btnRegister);
-        mBtnRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(LoginActivity.this, R.string.register_error_msg, Toast.LENGTH_SHORT).show();
-            }
-        });
-        
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        currentUser = ParseUser.getCurrentUser();
+        if (currentUser != null) {
+            showProfileLoggedIn();
+        } else {
+            showProfileLoggedOut();
+        }
+    }
+
+    /**
+     * Shows the profile of the given user.
+     */
+    private void showProfileLoggedIn() {
+        titleTextView.setText(R.string.profile_title_logged_in);
+        emailTextView.setText(currentUser.getEmail());
+        String fullName = currentUser.getString("name");
+        if (fullName != null) {
+            nameTextView.setText(fullName);
+        }
+        loginOrLogoutButton.setText(R.string.profile_logout_button_label);
+
+        Intent intentLocation = new Intent(LoginActivity.this, LocationActivity.class);
+        LoginActivity.this.startActivity(intentLocation);
+    }
+
+    /**
+     * Show a message asking the user to log in, toggle login/logout button text.
+     */
+    private void showProfileLoggedOut() {
+        titleTextView.setText(R.string.profile_title_logged_out);
+        emailTextView.setText("");
+        nameTextView.setText("");
+        loginOrLogoutButton.setText(R.string.profile_login_button_label);
     }
 
 
-    public void onClick(View view){
-        Log.d(TAG, "onClick called");
-    }
 }
