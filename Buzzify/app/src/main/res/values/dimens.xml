@@ -5,6 +5,8 @@
 
     <dimen name="fake_shadow_height">4dp</dimen>
     <dimen name="default_content_margin">8dp</dimen>
+    <dimen name="default_half_content_margin">4dp</dimen>
+    <dimen name="default_double_content_margin">16dp</dimen>
     <dimen name="small_margin">4dp</dimen>
     <dimen name="medium_margin">20dp</dimen>
     <dimen name="large_margin">40dp</dimen>

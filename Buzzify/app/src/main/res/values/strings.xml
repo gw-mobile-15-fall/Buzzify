@@ -14,4 +14,15 @@
 
     <string name="play_services_failed_connection">Could Not Connect to Google Play Services</string>
     <string name="retry">Retry</string>
+
+    <string name="most_requested_songs">Most Requested Songs</string>
+    <string name="popular_drinks">Popular Drinks</string>
+    <string name="vote_song">Vote!</string>
+    <string name="order">Order Drinks!</string>
+
+    <string name="placeholder_song">Placeholder Title</string>
+    <string name="placeholder_artist">Placeholder Artist</string>
+    <string name="placeholder_songartist">Placeholder Title - Placeholder Artist</string>
+    <string name="placeholder_album">Placeholder Album</string>
+    <string name="placeholder_drink">Placeholder Drink</string>
 </resources>
