@@ -1,121 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:id="@+id/layoutActivityLocation"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical">
 
     <include layout="@layout/view_toolbar" />
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/mainTabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabMode="fixed"
+        app:tabGravity="fill"/>
     <include layout="@layout/view_shadow" />
 
-    <LinearLayout
-
+    <android.support.v4.view.ViewPager
+        android:id="@+id/mainViewPager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/default_content_margin"
-            android:gravity="center">
-            <TextView
-                android:id="@+id/tvLblSongQueue"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/default_content_margin"
-                android:textSize="18dp"
-                android:textStyle="bold"
-                android:text="@string/most_requested_songs"/>
-
-            <android.support.v7.widget.CardView
-                android:id="@+id/btnVoteSong"
-                android:layout_centerHorizontal="true"
-                android:layout_alignParentBottom="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/default_content_margin"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:clickable="true"
-                android:onClick="onClick">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/default_content_margin"
-                    android:paddingBottom="@dimen/default_content_margin"
-                    android:paddingLeft="@dimen/medium_margin"
-                    android:paddingRight="@dimen/medium_margin"
-                    android:textSize="16sp"
-                    android:text="@string/vote_song" />
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rvSongQueue"
-                android:layout_centerHorizontal="true"
-                android:layout_above="@id/btnVoteSong"
-                android:layout_below="@id/tvLblSongQueue"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-            </android.support.v7.widget.RecyclerView>
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:orientation="vertical"
-            android:paddingTop="@dimen/default_content_margin"
-            android:gravity="center">
-            <TextView
-                android:id="@+id/tvLblDrinkQueue"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/default_content_margin"
-                android:text="@string/popular_drinks"
-                android:textSize="18dp"
-                android:textStyle="bold"/>
-
-            <android.support.v7.widget.CardView
-                android:id="@+id/btnOrderDrink"
-                android:layout_centerHorizontal="true"
-                android:layout_alignParentBottom="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/default_content_margin"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:clickable="true"
-                android:onClick="onClick">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/default_content_margin"
-                    android:paddingBottom="@dimen/default_content_margin"
-                    android:paddingLeft="@dimen/medium_margin"
-                    android:paddingRight="@dimen/medium_margin"
-                    android:textSize="16sp"
-                    android:text="@string/order" />
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rvDrinkQueue"
-                android:layout_centerHorizontal="true"
-                android:layout_below="@id/tvLblDrinkQueue"
-                android:layout_above="@id/btnOrderDrink"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-            </android.support.v7.widget.RecyclerView>
-        </RelativeLayout>
-    </LinearLayout>
+        android:layout_height="match_parent"/>
 </LinearLayout>

@@ -2,8 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="horizontal"
               android:layout_width="wrap_content"
-              android:layout_height="132dp"
-              android:padding="@dimen/default_double_content_margin">
+              android:layout_height="80dp">
 
     <LinearLayout
         android:id="@+id/llVoteArrows"
@@ -32,8 +31,8 @@
     <ImageView
         android:id="@+id/ivAlbumThumb"
         android:layout_toRightOf="@id/llVoteArrows"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:src="@drawable/placeholder_album"/>

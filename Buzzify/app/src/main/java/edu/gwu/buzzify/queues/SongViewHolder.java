@@ -7,9 +7,6 @@ import android.widget.TextView;
 
 import edu.gwu.buzzify.R;
 
-/**
- * Created by cheng on 11/2/15.
- */
 public class SongViewHolder extends RecyclerView.ViewHolder {
     private View mContainer;
     private ImageView mIvUpArrow, mIvDownArrow, mIvAlbumThumb;
