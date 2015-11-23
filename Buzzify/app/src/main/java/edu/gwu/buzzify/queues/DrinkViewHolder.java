@@ -7,9 +7,7 @@ import android.widget.TextView;
 
 import edu.gwu.buzzify.R;
 
-/**
- * Created by cheng on 11/2/15.
- */
+
 public class DrinkViewHolder extends RecyclerView.ViewHolder{
     private View mContainer;
     private ImageView mIvThumb;
