@@ -46,8 +46,8 @@ public final class R {
         public static int logo2=0x7f020006;
     }
     public static final class id {
-        public static int account_type_selection=0x7f09000d;
         public static int app_logo=0x7f090000;
+        public static int checkbox_login_pref=0x7f090012;
         public static int create_account=0x7f090017;
         public static int facebook_login=0x7f09000b;
         public static int login_help_email_input=0x7f090009;
@@ -60,15 +60,15 @@ public final class R {
         public static int parse_login_button=0x7f090005;
         public static int parse_login_help=0x7f090007;
         public static int parse_signup_button=0x7f090006;
-        public static int radio_bartender_user=0x7f090011;
-        public static int radio_dj_user=0x7f090010;
-        public static int radio_group_account_type=0x7f09000e;
-        public static int radio_standard_user=0x7f09000f;
+        public static int radio_bartender_user=0x7f090010;
+        public static int radio_dj_user=0x7f09000f;
+        public static int radio_group_account_type=0x7f09000d;
+        public static int radio_standard_user=0x7f09000e;
         public static int signup_confirm_password_input=0x7f090014;
         public static int signup_email_input=0x7f090015;
         public static int signup_name_input=0x7f090016;
         public static int signup_password_input=0x7f090013;
-        public static int signup_username_input=0x7f090012;
+        public static int signup_username_input=0x7f090011;
         public static int twitter_login=0x7f09000c;
     }
     public static final class layout {
@@ -136,9 +136,10 @@ public final class R {
         public static int com_parse_ui_twitter_login_failed_toast=0x7f05002f;
         public static int com_parse_ui_username_input_hint=0x7f050030;
         public static int com_parse_ui_username_taken_toast=0x7f050031;
-        public static int dj_user=0x7f050033;
-        public static int select_account_type=0x7f050034;
-        public static int standard_user=0x7f050035;
+        public static int default_auto_login=0x7f050033;
+        public static int dj_user=0x7f050034;
+        public static int select_account_type=0x7f050035;
+        public static int standard_user=0x7f050036;
     }
     public static final class style {
         public static int ParseLoginUI=0x7f080000;

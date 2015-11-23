@@ -33,6 +33,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -57,6 +58,7 @@ public class ParseSignupFragment extends ParseLoginFragmentBase implements OnCli
   private ParseUser user;
   private ParseFile userPhotoParseFile;
   private RadioGroup accountTypeRadioGroup;
+  private CheckBox loginPreferenceCheckbox;
   private EditText usernameField;
   private EditText passwordField;
   private EditText confirmPasswordField;
@@ -72,6 +74,7 @@ public class ParseSignupFragment extends ParseLoginFragmentBase implements OnCli
   private static final int DEFAULT_MIN_PASSWORD_LENGTH = 6;
   private static final String USER_OBJECT_NAME_FIELD = "name";
   private static final String USER_OBJECT_ACCOUNT_TYPE = "accountType";
+  private static final String USER_OBJECT_AUTO_LOGIN_PREF = "autoLogin";
   private static final String USER_PHOTO_FILE = "userPhoto.bmp";
   private static final String USER_OBJECT_PHOTO = "userPhoto";
   private static final int CAMERA_REQUEST = 1000;
@@ -108,6 +111,7 @@ public class ParseSignupFragment extends ParseLoginFragmentBase implements OnCli
         parent, false);
     ImageView appLogo = (ImageView) v.findViewById(R.id.app_logo);
     accountTypeRadioGroup = (RadioGroup) v.findViewById(R.id.radio_group_account_type);
+    loginPreferenceCheckbox = (CheckBox) v.findViewById(R.id.checkbox_login_pref);
     usernameField = (EditText) v.findViewById(R.id.signup_username_input);
     passwordField = (EditText) v.findViewById(R.id.signup_password_input);
     confirmPasswordField = (EditText) v
@@ -212,6 +216,7 @@ public class ParseSignupFragment extends ParseLoginFragmentBase implements OnCli
       }
 
       //Set account type
+
       String accountType;
       int selectedAccountRadioId = accountTypeRadioGroup.getCheckedRadioButtonId();
 
@@ -224,6 +229,14 @@ public class ParseSignupFragment extends ParseLoginFragmentBase implements OnCli
       }
 
       user.put(USER_OBJECT_ACCOUNT_TYPE, accountType);
+
+      //Set login preference
+
+      if (loginPreferenceCheckbox.isChecked()) {
+        user.put(USER_OBJECT_AUTO_LOGIN_PREF, "true");
+      } else {
+        user.put(USER_OBJECT_AUTO_LOGIN_PREF, "false");
+      }
 
       //send data to parse
       sendUserDataToParse();
