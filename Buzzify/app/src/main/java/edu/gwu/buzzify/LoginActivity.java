@@ -78,7 +78,9 @@ public class LoginActivity extends AppCompatActivity {
 
         currentUser = ParseUser.getCurrentUser();
 
-        if ((currentUser != null) && (currentUser.getString("autoLogin").matches("false"))) {
+        if ((currentUser != null) && currentUser.getString("autoLogin") != null &&
+                (currentUser.getString("autoLogin").matches("false"))) {
+            
             ParseUser.logOut();
             currentUser = null;
         }

@@ -1,5 +1,6 @@
 package edu.gwu.buzzify;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -38,5 +39,13 @@ public class MainActivity extends AppCompatActivity {
         mTabLayout.setupWithViewPager(mViewPager);
     }
 
-    public void onClick(View v){}
+    public void onClick(View v){
+        switch(v.getId()){
+            case R.id.btnVoteSong:
+                startActivity(new Intent(this, SpotifySearchActivity.class));
+                break;
+            case R.id.btnOrderDrink:
+                break;
+        }
+    }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/Users/tito/AndroidStudioProjects/Buzzify/Buzzify/ParseUI-Login/build/intermediates/bundles/debug/res/values/values.xml -->
+    <!-- From: file:/Users/cheng/AndroidStudioProjects/Buzzify/Buzzify/ParseUI-Login/build/intermediates/bundles/debug/res/values/values.xml -->
     <eat-comment/>
     <color name="com_parse_ui_facebook_login_button">#3B5998</color>
     <color name="com_parse_ui_facebook_login_button_focus">#304F8B</color>
@@ -27,6 +27,7 @@
         <item quantity="one">Password must be at least %d character long</item>
         <item quantity="other">Password must be at least %d characters long</item>
     </plurals>
+    <string name="bartender_user">Bartender</string>
     <string name="com_parse_ui_confirm_password_input_hint">Re-enter password</string>
     <string name="com_parse_ui_create_account_button_label">Create account</string>
     <string name="com_parse_ui_email_input_hint">Email</string>
@@ -77,6 +78,10 @@
     <string name="com_parse_ui_twitter_login_failed_toast">Twitter login failed</string>
     <string name="com_parse_ui_username_input_hint">Username</string>
     <string name="com_parse_ui_username_taken_toast">Username is already taken, please choose a different one</string>
+    <string name="default_auto_login">Login automatically?</string>
+    <string name="dj_user">DJ</string>
+    <string name="select_account_type">Select account type</string>
+    <string name="standard_user">Regular user</string>
     <style name="ParseLoginUI"/>
     <style name="ParseLoginUI.Button" parent="@android:style/Widget.Button">
         <item name="android:layout_width">match_parent</item>

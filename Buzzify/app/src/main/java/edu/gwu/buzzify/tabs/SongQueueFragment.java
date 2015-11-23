@@ -53,9 +53,7 @@ public class SongQueueFragment extends Fragment {
 
         mRvSongQueue.setLayoutManager(queueLayoutManager);
 
-        mSongQueueAdapter = new SongQueueAdapter(mSongInfos);
+        mSongQueueAdapter = new SongQueueAdapter(mSongInfos, getContext());
         mRvSongQueue.setAdapter(mSongQueueAdapter);
     }
-
-
 }

@@ -44,7 +44,8 @@ public final class R {
 	}
 	public static final class id {
 		public static final int app_logo = 0x7f090000;
-		public static final int create_account = 0x7f090012;
+		public static final int checkbox_login_pref = 0x7f090012;
+		public static final int create_account = 0x7f090017;
 		public static final int facebook_login = 0x7f09000b;
 		public static final int login_help_email_input = 0x7f090009;
 		public static final int login_help_instructions = 0x7f090008;
@@ -56,11 +57,15 @@ public final class R {
 		public static final int parse_login_button = 0x7f090005;
 		public static final int parse_login_help = 0x7f090007;
 		public static final int parse_signup_button = 0x7f090006;
-		public static final int signup_confirm_password_input = 0x7f09000f;
-		public static final int signup_email_input = 0x7f090010;
-		public static final int signup_name_input = 0x7f090011;
-		public static final int signup_password_input = 0x7f09000e;
-		public static final int signup_username_input = 0x7f09000d;
+		public static final int radio_bartender_user = 0x7f090010;
+		public static final int radio_dj_user = 0x7f09000f;
+		public static final int radio_group_account_type = 0x7f09000d;
+		public static final int radio_standard_user = 0x7f09000e;
+		public static final int signup_confirm_password_input = 0x7f090014;
+		public static final int signup_email_input = 0x7f090015;
+		public static final int signup_name_input = 0x7f090016;
+		public static final int signup_password_input = 0x7f090013;
+		public static final int signup_username_input = 0x7f090011;
 		public static final int twitter_login = 0x7f09000c;
 	}
 	public static final class layout {
@@ -77,6 +82,7 @@ public final class R {
 		public static final int com_parse_ui_password_too_short_toast = 0x7f040000;
 	}
 	public static final class string {
+		public static final int bartender_user = 0x7f050032;
 		public static final int com_parse_ui_confirm_password_input_hint = 0x7f050000;
 		public static final int com_parse_ui_create_account_button_label = 0x7f050001;
 		public static final int com_parse_ui_email_input_hint = 0x7f050002;
@@ -127,6 +133,10 @@ public final class R {
 		public static final int com_parse_ui_twitter_login_failed_toast = 0x7f05002f;
 		public static final int com_parse_ui_username_input_hint = 0x7f050030;
 		public static final int com_parse_ui_username_taken_toast = 0x7f050031;
+		public static final int default_auto_login = 0x7f050033;
+		public static final int dj_user = 0x7f050034;
+		public static final int select_account_type = 0x7f050035;
+		public static final int standard_user = 0x7f050036;
 	}
 	public static final class style {
 		public static final int ParseLoginUI = 0x7f080000;
