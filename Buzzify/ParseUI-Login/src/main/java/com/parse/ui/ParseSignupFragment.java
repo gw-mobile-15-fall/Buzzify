@@ -35,6 +35,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -54,6 +56,7 @@ public class ParseSignupFragment extends ParseLoginFragmentBase implements OnCli
   private boolean photoSentSuccess = false;
   private ParseUser user;
   private ParseFile userPhotoParseFile;
+  private RadioGroup accountTypeRadioGroup;
   private EditText usernameField;
   private EditText passwordField;
   private EditText confirmPasswordField;
@@ -68,6 +71,7 @@ public class ParseSignupFragment extends ParseLoginFragmentBase implements OnCli
   private static final String LOG_TAG = "ParseSignupFragment";
   private static final int DEFAULT_MIN_PASSWORD_LENGTH = 6;
   private static final String USER_OBJECT_NAME_FIELD = "name";
+  private static final String USER_OBJECT_ACCOUNT_TYPE = "accountType";
   private static final String USER_PHOTO_FILE = "userPhoto.bmp";
   private static final String USER_OBJECT_PHOTO = "userPhoto";
   private static final int CAMERA_REQUEST = 1000;
@@ -103,6 +107,7 @@ public class ParseSignupFragment extends ParseLoginFragmentBase implements OnCli
     View v = inflater.inflate(R.layout.com_parse_ui_parse_signup_fragment,
         parent, false);
     ImageView appLogo = (ImageView) v.findViewById(R.id.app_logo);
+    accountTypeRadioGroup = (RadioGroup) v.findViewById(R.id.radio_group_account_type);
     usernameField = (EditText) v.findViewById(R.id.signup_username_input);
     passwordField = (EditText) v.findViewById(R.id.signup_password_input);
     confirmPasswordField = (EditText) v
@@ -205,6 +210,20 @@ public class ParseSignupFragment extends ParseLoginFragmentBase implements OnCli
       if (name.length() != 0) {
         user.put(USER_OBJECT_NAME_FIELD, name);
       }
+
+      //Set account type
+      String accountType;
+      int selectedAccountRadioId = accountTypeRadioGroup.getCheckedRadioButtonId();
+
+      if (selectedAccountRadioId == R.id.radio_bartender_user) {
+        accountType = "bartender";
+      } else if (selectedAccountRadioId == R.id.radio_dj_user) {
+        accountType = "dj";
+      } else {
+        accountType = "standard";
+      }
+
+      user.put(USER_OBJECT_ACCOUNT_TYPE, accountType);
 
       //send data to parse
       sendUserDataToParse();
