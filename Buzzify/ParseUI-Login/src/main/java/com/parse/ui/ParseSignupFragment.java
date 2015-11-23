@@ -22,8 +22,12 @@
 package com.parse.ui;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -33,8 +37,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
+
+import java.nio.ByteBuffer;
 
 /**
  * Fragment for the user signup screen.
@@ -43,6 +51,9 @@ public class ParseSignupFragment extends ParseLoginFragmentBase implements OnCli
   public static final String USERNAME = "com.parse.ui.ParseSignupFragment.USERNAME";
   public static final String PASSWORD = "com.parse.ui.ParseSignupFragment.PASSWORD";
 
+  private boolean photoSentSuccess = false;
+  private ParseUser user;
+  private ParseFile userPhotoParseFile;
   private EditText usernameField;
   private EditText passwordField;
   private EditText confirmPasswordField;
@@ -57,6 +68,9 @@ public class ParseSignupFragment extends ParseLoginFragmentBase implements OnCli
   private static final String LOG_TAG = "ParseSignupFragment";
   private static final int DEFAULT_MIN_PASSWORD_LENGTH = 6;
   private static final String USER_OBJECT_NAME_FIELD = "name";
+  private static final String USER_PHOTO_FILE = "userPhoto.bmp";
+  private static final String USER_OBJECT_PHOTO = "userPhoto";
+  private static final int CAMERA_REQUEST = 1000;
 
   public static ParseSignupFragment newInstance(Bundle configOptions, String username, String password) {
     ParseSignupFragment signupFragment = new ParseSignupFragment();
@@ -70,6 +84,10 @@ public class ParseSignupFragment extends ParseLoginFragmentBase implements OnCli
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup parent,
                            Bundle savedInstanceState) {
+
+    //launch the camera
+    Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+    startActivityForResult(cameraIntent,CAMERA_REQUEST);
 
     Bundle args = getArguments();
     config = ParseLoginConfig.fromBundle(args, getActivity());
@@ -136,6 +154,7 @@ public class ParseSignupFragment extends ParseLoginFragmentBase implements OnCli
 
   @Override
   public void onClick(View v) {
+
     String username = usernameField.getText().toString();
     String password = passwordField.getText().toString();
     String passwordAgain = confirmPasswordField.getText().toString();
@@ -175,7 +194,7 @@ public class ParseSignupFragment extends ParseLoginFragmentBase implements OnCli
     } else if (name != null && name.length() == 0) {
       showToast(R.string.com_parse_ui_no_name_toast);
     } else {
-      ParseUser user = new ParseUser();
+      user = new ParseUser();
 
       // Set standard fields
       user.setUsername(username);
@@ -187,41 +206,87 @@ public class ParseSignupFragment extends ParseLoginFragmentBase implements OnCli
         user.put(USER_OBJECT_NAME_FIELD, name);
       }
 
-      loadingStart();
-      user.signUpInBackground(new SignUpCallback() {
+      //send data to parse
+      sendUserDataToParse();
 
-        @Override
-        public void done(ParseException e) {
-          if (isActivityDestroyed()) {
-            return;
-          }
+    }
+  }
 
-          if (e == null) {
-            loadingFinish();
-            signupSuccess();
-          } else {
-            loadingFinish();
-            if (e != null) {
-              debugLog(getString(R.string.com_parse_ui_login_warning_parse_signup_failed) +
-                  e.toString());
-              switch (e.getCode()) {
-                case ParseException.INVALID_EMAIL_ADDRESS:
-                  showToast(R.string.com_parse_ui_invalid_email_toast);
-                  break;
-                case ParseException.USERNAME_TAKEN:
-                  showToast(R.string.com_parse_ui_username_taken_toast);
-                  break;
-                case ParseException.EMAIL_TAKEN:
-                  showToast(R.string.com_parse_ui_email_taken_toast);
-                  break;
-                default:
-                  showToast(R.string.com_parse_ui_signup_failed_unknown_toast);
-              }
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data){
+    if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK){
+      saveUserProfilePhoto(data);
+
+    } else {
+      Log.e(LOG_TAG, "Problem getting image");
+    }
+  }
+
+
+  private void sendUserDataToParse() {
+
+    loadingStart();
+
+    //send photo to parse
+    userPhotoParseFile.saveInBackground(new SaveCallback() {
+      @Override
+      public void done(ParseException e) {
+        user.put(USER_OBJECT_PHOTO, userPhotoParseFile);
+        signUpNewUser();
+      }
+    });
+  }
+
+  private void saveUserProfilePhoto(Intent data) {
+    Bitmap userPhotoBitmap = (Bitmap) data.getExtras().get("data");
+
+    //Bitmap to byte array code taken from http://stackoverflow.com/questions/10191871/converting-bitmap-to-bytearray-android
+
+    int numBytes = userPhotoBitmap.getByteCount();
+
+    ByteBuffer buffer = ByteBuffer.allocate(numBytes);
+    userPhotoBitmap.copyPixelsToBuffer(buffer);
+
+    byte[] userPhotoByteArray = buffer.array();
+
+    userPhotoParseFile = new ParseFile(USER_PHOTO_FILE, userPhotoByteArray);
+
+  }
+
+  private void signUpNewUser() {
+    user.signUpInBackground(new SignUpCallback() {
+
+      @Override
+      public void done(ParseException e) {
+        if (isActivityDestroyed()) {
+          return;
+        }
+
+        if (e == null) {
+          loadingFinish();
+          signupSuccess();
+        } else {
+          loadingFinish();
+          if (e != null) {
+            debugLog(getString(R.string.com_parse_ui_login_warning_parse_signup_failed) +
+                    e.toString());
+            switch (e.getCode()) {
+              case ParseException.INVALID_EMAIL_ADDRESS:
+                showToast(R.string.com_parse_ui_invalid_email_toast);
+                break;
+              case ParseException.USERNAME_TAKEN:
+                showToast(R.string.com_parse_ui_username_taken_toast);
+                break;
+              case ParseException.EMAIL_TAKEN:
+                showToast(R.string.com_parse_ui_email_taken_toast);
+                break;
+              default:
+                showToast(R.string.com_parse_ui_signup_failed_unknown_toast);
             }
           }
         }
-      });
-    }
+      }
+    });
   }
 
   @Override

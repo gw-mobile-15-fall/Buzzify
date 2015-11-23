@@ -26,4 +26,4 @@
         <include layout="@layout/com_parse_ui_parse_login_third_party_section" />
     </LinearLayout>
 </LinearLayout>
-<!-- From: file:/E:/Data/Actual%20Documents/Android%20Studio%20Workspace/Buzzify/Buzzify/ParseUI-Login/src/main/res/layout/com_parse_ui_parse_login_fragment.xml --><!-- From: file:/E:/Data/Actual%20Documents/Android%20Studio%20Workspace/Buzzify/Buzzify/ParseUI-Login/build/intermediates/bundles/debug/res/layout/com_parse_ui_parse_login_fragment.xml -->
+<!-- From: file:/Users/tito/AndroidStudioProjects/Buzzify/Buzzify/ParseUI-Login/src/main/res/layout/com_parse_ui_parse_login_fragment.xml --><!-- From: file:/Users/tito/AndroidStudioProjects/Buzzify/Buzzify/ParseUI-Login/build/intermediates/bundles/debug/res/layout/com_parse_ui_parse_login_fragment.xml -->

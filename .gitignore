@@ -1,3 +1,11 @@
+.gradle
+/local.properties
+/.idea/workspace.xml
+/.idea/libraries
+.DS_Store
+/build
+/captures
+
 /Buzzify/.gradle
 /Buzzify/local.properties
 /Buzzify/.idea/workspace.xml
@@ -5,3 +13,6 @@
 /Buzzify/.DS_Store
 /Buzzify/build
 /Buzzify/captures
+
+/Buzzify/ParseUI-Login/build
+/Buzzify/ParseUI-Widget/build

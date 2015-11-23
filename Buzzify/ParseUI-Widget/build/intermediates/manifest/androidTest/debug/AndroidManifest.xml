@@ -23,7 +23,7 @@
     package="com.parse.widget.test" >
 
     <uses-sdk
-        android:minSdkVersion="9"
+        android:minSdkVersion="12"
         android:targetSdkVersion="21" />
 
     <instrumentation

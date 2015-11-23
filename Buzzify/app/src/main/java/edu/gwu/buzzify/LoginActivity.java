@@ -76,6 +76,9 @@ public class LoginActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
+        // TODO: 11/16/15 remove auto logout after finish registration testing
+        ParseUser.logOut();
+
         currentUser = ParseUser.getCurrentUser();
         if (currentUser != null) {
             showProfileLoggedIn();

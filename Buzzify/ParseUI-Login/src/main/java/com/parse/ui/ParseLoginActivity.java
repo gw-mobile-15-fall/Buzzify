@@ -115,7 +115,7 @@ public class ParseLoginActivity extends FragmentActivity implements
     super.onActivityResult(requestCode, resultCode, data);
     
     // Required for making Facebook login work
-    ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
+    //ParseFacebookUtils.onActivityResult(requestCode, resultCode, data);
   }
 
   /**
