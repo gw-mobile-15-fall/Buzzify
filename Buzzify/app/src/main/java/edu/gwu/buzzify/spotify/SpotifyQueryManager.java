@@ -32,8 +32,28 @@ public class SpotifyQueryManager {
         mListener = listener;
     }
 
+    public void searchArtistById(String id){
+        handleGetArtistQuery(id,
+                API_URLS.SPOTIFY_GET_ARTIST_ALBUMS,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        mListener.onAlbumsParsed(parseAlbumsFromQuery(response));
+                    }
+                });
+
+        handleGetArtistQuery(id,
+                API_URLS.SPOTIFY_GET_ARTIST_TOP_TRACKS,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        mListener.onSongsParsed(parseSongsFromQuery(response));
+                    }
+                });
+    }
+
     public void searchAll(String query){
-        handleQuery(query,
+        handleSearchQuery(query,
                 API_URLS.SPOTIFY_SEARCH_TYPE_ARTISTSALBUM, API_URLS.SPOTIFY_SEARCH_LIMIT_2,
                 new Response.Listener<String>() {
                     @Override
@@ -47,7 +67,7 @@ public class SpotifyQueryManager {
     }
 
     public void searchArtists(String query){
-        handleQuery(query,
+        handleSearchQuery(query,
                 API_URLS.SPOTIFY_SEARCH_TYPE_ARTIST, API_URLS.SPOTIFY_SEARCH_LIMIT_10,
                 new Response.Listener<String>() {
                     @Override
@@ -58,7 +78,7 @@ public class SpotifyQueryManager {
     }
 
     public void searchAlbums(String query){
-        handleQuery(query,
+        handleSearchQuery(query,
                 API_URLS.SPOTIFY_SEARCH_TYPE_ALBUM, API_URLS.SPOTIFY_SEARCH_LIMIT_10,
                 new Response.Listener<String>() {
                     @Override
@@ -69,7 +89,7 @@ public class SpotifyQueryManager {
     }
 
     public void searchSongs(String query){
-        handleQuery(query,
+        handleSearchQuery(query,
                 API_URLS.SPOTIFY_SEARCH_TYPE_TRACK, API_URLS.SPOTIFY_SEARCH_LIMIT_10,
                 new Response.Listener<String>() {
                     @Override
@@ -79,7 +99,7 @@ public class SpotifyQueryManager {
                 });
     }
 
-    private void handleQuery(String query, String searchTypes, String searchLimit, Response.Listener<String> responseListener){
+    private void handleSearchQuery(String query, String searchTypes, String searchLimit, Response.Listener<String> responseListener){
         Log.d(TAG, "User is searching for: " + query);
 
         // Instantiate the RequestQueue.
@@ -90,6 +110,23 @@ public class SpotifyQueryManager {
                 .append(searchTypes)
                 .append(API_URLS.SPOTIFY_SEARCH_MARKET)
                 .append(searchLimit);
+
+        Log.d(TAG, "Making request to URL: " + url.toString());
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url.toString(), responseListener, mErrorListener);
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
+    }
+
+    private void handleGetArtistQuery(String artistId, String artistDetails, Response.Listener<String> responseListener){
+        Log.d(TAG, "User is searching for: " + artistId);
+
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(mContext);
+        StringBuilder url = new StringBuilder(API_URLS.SPOTIFY_GET_ARTIST)
+                .append("/")
+                .append(artistId)
+                .append(artistDetails);
 
         Log.d(TAG, "Making request to URL: " + url.toString());
         // Request a string response from the provided URL.
@@ -111,7 +148,7 @@ public class SpotifyQueryManager {
         for(int i = 0; i < artistListing.size(); i++){
             JsonObject artist = artistListing.get(i).getAsJsonObject();
             String artistName = artist.get("name").getAsString();
-            String id = artist.get("id").toString();
+            String id = artist.get("id").getAsString();
 
             JsonArray thumbnails = artist.get("images").getAsJsonArray();
             String thumbnail = "";
@@ -127,7 +164,11 @@ public class SpotifyQueryManager {
 
     private List<SpotifyItem> parseAlbumsFromQuery(String response){
         JsonParser parser = new JsonParser();
-        JsonObject topObject = parser.parse(response).getAsJsonObject().get("albums").getAsJsonObject();
+        JsonObject topObject = parser.parse(response).getAsJsonObject();
+
+        if(topObject.has("albums"))
+            topObject = topObject.get("albums").getAsJsonObject();
+
         JsonArray albumListing = topObject.get("items").getAsJsonArray();
         List<SpotifyItem> albumItems = new ArrayList<>();
 
@@ -140,7 +181,7 @@ public class SpotifyQueryManager {
             String albumName = album.get("name").getAsString();
             String temp = album.get("type").getAsString();
             String albumType = temp.substring(0, 1).toUpperCase() + temp.substring(1);
-            String id = album.get("id").toString();
+            String id = album.get("id").getAsString();
 
             JsonArray thumbnails = album.get("images").getAsJsonArray();
             String albumArtUrl = "";
@@ -157,20 +198,27 @@ public class SpotifyQueryManager {
 
     private List<SpotifyItem> parseSongsFromQuery(String response){
         JsonParser parser = new JsonParser();
-        JsonObject topObject = parser.parse(response).getAsJsonObject().get("tracks").getAsJsonObject();
-        JsonArray trackListing = topObject.get("items").getAsJsonArray();
+        JsonObject topObject = parser.parse(response).getAsJsonObject();
+        JsonArray trackListing;
+
+        if(topObject.get("tracks").isJsonArray()){
+            trackListing = topObject.get("tracks").getAsJsonArray();
+        }else{
+            topObject = topObject.get("tracks").getAsJsonObject();
+            trackListing = topObject.get("items").getAsJsonArray();
+
+            if(topObject.get("total").getAsInt() == 0)
+                return null;
+        }
+
         List<SpotifyItem> songItems = new ArrayList<>();
-
-        if(topObject.get("total").getAsInt() == 0)
-            return null;
-
 
         for(int i = 0; i < trackListing.size(); i++){
             JsonObject track = trackListing.get(i).getAsJsonObject();
             String songTitle = track.get("name").getAsString();
             String artistName = track.get("artists").getAsJsonArray().get(0).getAsJsonObject().get("name").getAsString();
             String albumName = track.get("album").getAsJsonObject().get("name").getAsString();
-            String id = track.get("id").toString();
+            String id = track.get("id").getAsString();
 
             JsonArray thumbnails = track.get("album").getAsJsonObject().get("images").getAsJsonArray();
             String albumArtUrl = "";

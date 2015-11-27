@@ -1,8 +1,9 @@
 package edu.gwu.buzzify.spotify;
 
-import android.app.Fragment;
+
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -21,10 +22,10 @@ import edu.gwu.buzzify.models.SpotifyItemViewHolderClickListener;
 /**
  * Created by Nick on 11/26/2015.
  */
-public class AllResultsFragment extends Fragment implements SpotifyQueryListener, SpotifyItemViewHolderClickListener {
+public class QueryAllFragment extends Fragment implements SpotifyQueryListener, SpotifyItemViewHolderClickListener {
     public static final String KEY_SEARCH_QUERY = "query";
 
-    private static final String TAG = AllResultsFragment.class.getName();
+    private static final String TAG = QueryAllFragment.class.getName();
     private static final byte INDEX_ARTISTS = 0;
     private static final byte INDEX_ALBUMS = 1;
     private static final byte INDEX_SONGS = 2;
@@ -34,8 +35,11 @@ public class AllResultsFragment extends Fragment implements SpotifyQueryListener
     private String mQuery;
     private boolean mFirstSearch;
 
+    private SpotifyFragmentListener mListener;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.d(TAG, "QueryAllFragment onCreateView");
         View view = inflater.inflate(R.layout.fragment_spotify_search_all, container, false);
 
         mRecyclerViews[INDEX_ARTISTS] = new RecyclerViewWrapper((RecyclerView)view.findViewById(R.id.rvArtistSearch), getActivity());
@@ -44,13 +48,16 @@ public class AllResultsFragment extends Fragment implements SpotifyQueryListener
 
         mQueryManager = new SpotifyQueryManager(getActivity(), this);
         mQuery = getArguments().getString(KEY_SEARCH_QUERY);
+
+        mListener = (SpotifyFragmentListener)getActivity();
+        mFirstSearch = false;
         return view;
     }
 
     @Override
     public void onResume(){
         super.onResume();
-
+        Log.d(TAG, "Fragment onResume");
         if(mQuery != null && !mFirstSearch) {
             mQueryManager.searchAll(mQuery);
             mFirstSearch = true;
@@ -106,11 +113,11 @@ public class AllResultsFragment extends Fragment implements SpotifyQueryListener
         View parent = (View)view.getParent();
 
         if(parent == mRecyclerViews[INDEX_ARTISTS].view){
-            Log.d(TAG, "Artist " + title + " clicked, position = " + position);
+            mListener.onArtistSelected(mRecyclerViews[INDEX_ARTISTS].data.get(position));
         }else if(parent == mRecyclerViews[INDEX_ALBUMS].view){
-            Log.d(TAG, "Album " + title + " clicked, position = " + position);
+            mListener.onAlbumSelected(mRecyclerViews[INDEX_ALBUMS].data.get(position));
         }else if(parent == mRecyclerViews[INDEX_SONGS].view){
-            Log.d(TAG, "Song " + title + " clicked, position = " + position);
+            mListener.onSongSelected(mRecyclerViews[INDEX_SONGS].data.get(position));
         }
     }
 
@@ -123,7 +130,7 @@ public class AllResultsFragment extends Fragment implements SpotifyQueryListener
             this.view = view;
             this.view.setLayoutManager(new LinearLayoutManager(context));
             this.data = new ArrayList<>();
-            adapter = new SpotifyItemAdapter(data, context, AllResultsFragment.this);
+            adapter = new SpotifyItemAdapter(data, context, QueryAllFragment.this);
 
             this.view.setAdapter(adapter);
         }
