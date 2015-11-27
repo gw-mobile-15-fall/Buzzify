@@ -17,6 +17,7 @@ import android.view.MenuInflater;
 
 import edu.gwu.buzzify.drawer.NavDrawer;
 import edu.gwu.buzzify.models.SpotifyItem;
+import edu.gwu.buzzify.spotify.QueryAlbumFragment;
 import edu.gwu.buzzify.spotify.QueryAllFragment;
 import edu.gwu.buzzify.spotify.QueryArtistFragment;
 import edu.gwu.buzzify.spotify.SpotifyFragmentListener;
@@ -95,6 +96,20 @@ public class SpotifySearchActivity extends AppCompatActivity implements SpotifyF
         transaction.commit();
     }
 
+    private void startAlbumFragment(String albumId, String albumName){
+        Log.d(TAG, "Starting QueryAlbumFragment");
+        QueryAlbumFragment fragment = new QueryAlbumFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(QueryAlbumFragment.KEY_ALBUM_ID, albumId);
+        bundle.putString(QueryAlbumFragment.KEY_ALBUM_NAME, albumName);
+        fragment.setArguments(bundle);
+
+        FragmentTransaction transaction = mFragmentManager.beginTransaction();
+        transaction.replace(R.id.spotifyFragmentContainer, fragment, "QueryAlbumFragment");
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
     @Override
     public void onArtistSelected(SpotifyItem artist) {
         Log.d(TAG, "Artist " + artist.getLine1() + " selected " + "(" + artist.getId() + ")");
@@ -104,6 +119,7 @@ public class SpotifySearchActivity extends AppCompatActivity implements SpotifyF
     @Override
     public void onAlbumSelected(SpotifyItem album) {
         Log.d(TAG, "Album " + album.getLine1() + " selected");
+        startAlbumFragment(album.getId(), album.getLine1());
     }
 
     @Override

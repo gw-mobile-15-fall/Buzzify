@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +37,8 @@ public class QueryArtistFragment extends Fragment implements SpotifyQueryListene
     private SpotifyItemAdapter mTopSongsAdapter;
     private List<SpotifyItem> mTopSongsInfo;
 
+    private SpotifyFragmentListener mListener;
+
     private boolean mFirstSearch;
 
     @Override
@@ -61,8 +62,12 @@ public class QueryArtistFragment extends Fragment implements SpotifyQueryListene
 
         String artistName = getArguments().getString(KEY_ARTIST_NAME);
 
+        //TODO string constants
         ((TextView)view.findViewById(R.id.tvLblAlbums)).setText(artistName + " - " + "Albums");
         ((TextView)view.findViewById(R.id.tvLblTopSongs)).setText(artistName + " - " + "Top Songs");
+
+        mListener = (SpotifyFragmentListener)getActivity();
+        mFirstSearch = false;
         return view;
     }
 
@@ -104,9 +109,9 @@ public class QueryArtistFragment extends Fragment implements SpotifyQueryListene
         View parent = (View)view.getParent();
 
         if(parent == mRvArtistAlbums){
-            Log.d(TAG, "Album " + title + " clicked, position = " + position);
+            mListener.onAlbumSelected(mArtistAlbumsInfo.get(position));
         }else if(parent == mRvTopSongs){
-            Log.d(TAG, "Song " + title + " clicked, position = " + position);
+            mListener.onSongSelected(mTopSongsInfo.get(position));
         }
     }
 }
