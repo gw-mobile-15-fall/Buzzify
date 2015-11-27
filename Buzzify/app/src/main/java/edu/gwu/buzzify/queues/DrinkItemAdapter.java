@@ -12,10 +12,10 @@ import edu.gwu.buzzify.R;
 /**
  * Created by cheng on 11/2/15.
  */
-public class DrinkQueueAdapter extends RecyclerView.Adapter<DrinkViewHolder> {
+public class DrinkItemAdapter extends RecyclerView.Adapter<DrinkViewHolder> {
     private List<DrinkInfo> mDrinkInfos;
 
-    public DrinkQueueAdapter(List<DrinkInfo> drinks){
+    public DrinkItemAdapter(List<DrinkInfo> drinks){
         mDrinkInfos = drinks;
     }
 

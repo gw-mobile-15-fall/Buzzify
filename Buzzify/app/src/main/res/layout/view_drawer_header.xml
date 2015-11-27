@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/drawer_header_height"
+    android:background="@drawable/drawer_background"
+    android:orientation="vertical">
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/default_content_margin"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <TextView
+            android:id="@+id/drawerUsername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/default_double_content_margin"
+            android:textColor="#ffffff"
+            android:text="Placeholder Username"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/drawerEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#ffffff"
+            android:layout_marginLeft="@dimen/default_double_content_margin"
+            android:layout_marginTop="@dimen/default_half_content_margin"
+            android:text="placeholder_email@gmail.com"
+            android:textSize="14sp"
+            android:textStyle="normal" />
+    </LinearLayout>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="@dimen/drawer_circlepic_size"
+        android:layout_height="@dimen/drawer_circlepic_size"
+        android:src="@drawable/logo1"
+        android:layout_marginLeft="@dimen/default_double_content_margin"
+        android:layout_marginTop="@dimen/large_margin"
+        android:id="@+id/drawerCircleView" />
+</RelativeLayout>

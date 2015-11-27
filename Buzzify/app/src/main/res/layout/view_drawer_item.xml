@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:paddingTop="@dimen/default_content_margin"
+    android:paddingBottom="@dimen/default_content_margin"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:clickable="true"
+    android:background="?android:attr/selectableItemBackground">
+
+
+    <ImageView
+        android:id="@+id/drawerRowIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:src="@drawable/ic_media_play"/> <!-- Placeholder icon -->
+
+    <TextView
+        android:id="@+id/drawerRowText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/drawer_text_marginLeft"
+        android:paddingTop="@dimen/drawer_text_marginTop"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Medium Text" />
+</LinearLayout>

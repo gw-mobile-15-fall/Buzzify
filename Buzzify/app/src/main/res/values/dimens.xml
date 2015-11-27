@@ -11,4 +11,9 @@
     <dimen name="medium_margin">20dp</dimen>
     <dimen name="large_margin">40dp</dimen>
 
+    <dimen name="drawer_width">280dp</dimen>
+    <dimen name="drawer_text_marginLeft">12dp</dimen>
+    <dimen name="drawer_text_marginTop">4dp</dimen>
+    <dimen name="drawer_header_height">178dp</dimen>
+    <dimen name="drawer_circlepic_size">70dp</dimen>
 </resources>

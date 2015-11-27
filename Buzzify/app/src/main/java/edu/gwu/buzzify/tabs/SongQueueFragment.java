@@ -13,15 +13,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.gwu.buzzify.R;
-import edu.gwu.buzzify.queues.SongInfo;
-import edu.gwu.buzzify.queues.SongQueueAdapter;
+import edu.gwu.buzzify.queues.SpotifyItem;
+import edu.gwu.buzzify.queues.SpotifyItemAdapter;
 
 public class SongQueueFragment extends Fragment {
     private String TAG = SongQueueFragment.class.getName();
 
     private RecyclerView mRvSongQueue;
-    private SongQueueAdapter mSongQueueAdapter;
-    private ArrayList<SongInfo> mSongInfos;
+    private SpotifyItemAdapter mSpotifyItemAdapter;
+    private ArrayList<SpotifyItem> mSongInfos;
 
     public SongQueueFragment(){}
 
@@ -30,18 +30,18 @@ public class SongQueueFragment extends Fragment {
         Log.d(TAG, "onCreateView called");
         View view =  inflater.inflate(R.layout.fragment_song_queue, container, false);
 
-        mSongInfos = new ArrayList<SongInfo>();
+        mSongInfos = new ArrayList<SpotifyItem>();
         createPlaceholderSongs(mSongInfos);
         setupQueue(view);
         return view;
     }
 
-    private void createPlaceholderSongs(List<SongInfo> output){
+    private void createPlaceholderSongs(List<SpotifyItem> output){
         for(int i = 0; i < 10; i++)
-            output.add(new SongInfo(getString(R.string.placeholder_song),
+            output.add(new SpotifyItem(getString(R.string.placeholder_song),
                     getString(R.string.placeholder_artist),
                     getString(R.string.placeholder_album),
-                    ""));
+                    "",""));
     }
 
     private void setupQueue(View view){
@@ -53,7 +53,7 @@ public class SongQueueFragment extends Fragment {
 
         mRvSongQueue.setLayoutManager(queueLayoutManager);
 
-        mSongQueueAdapter = new SongQueueAdapter(mSongInfos, getContext());
-        mRvSongQueue.setAdapter(mSongQueueAdapter);
+        mSpotifyItemAdapter = new SpotifyItemAdapter(mSongInfos, getContext());
+        mRvSongQueue.setAdapter(mSpotifyItemAdapter);
     }
 }

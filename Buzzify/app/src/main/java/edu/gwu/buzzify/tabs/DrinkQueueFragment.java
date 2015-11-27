@@ -14,14 +14,14 @@ import java.util.List;
 
 import edu.gwu.buzzify.R;
 import edu.gwu.buzzify.queues.DrinkInfo;
-import edu.gwu.buzzify.queues.DrinkQueueAdapter;
+import edu.gwu.buzzify.queues.DrinkItemAdapter;
 
 
 public class DrinkQueueFragment extends Fragment {
     private String TAG = DrinkQueueFragment.class.getName();
 
     private RecyclerView mRvDrinkQueue;
-    private DrinkQueueAdapter mDrinkQueueAdapter;
+    private DrinkItemAdapter mDrinkQueueAdapter;
     private ArrayList<DrinkInfo> mDrinkInfos;
 
     public DrinkQueueFragment(){}
@@ -51,7 +51,7 @@ public class DrinkQueueFragment extends Fragment {
 
         mRvDrinkQueue.setLayoutManager(queueLayoutManager);
 
-        mDrinkQueueAdapter = new DrinkQueueAdapter(mDrinkInfos);
+        mDrinkQueueAdapter = new DrinkItemAdapter(mDrinkInfos);
         mRvDrinkQueue.setAdapter(mDrinkQueueAdapter);
     }
 

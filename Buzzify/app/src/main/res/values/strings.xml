@@ -38,4 +38,6 @@
     <string name="parse_app_id">0nZ8CuhAGPGo5Eq14w6lUBszJY6uD02CtojuN3dw</string>
     <string name="parse_client_key">FfAbDNX5GdbZERQv07PFeKshZWXKiCty4G9TDJkS</string>
 
+    <string name="drawer_open">Open Drawer</string>
+    <string name="drawer_close">Close Drawer</string>
 </resources>
