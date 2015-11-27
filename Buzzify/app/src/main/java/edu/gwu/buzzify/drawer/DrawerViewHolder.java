@@ -41,7 +41,8 @@ public class DrawerViewHolder extends RecyclerView.ViewHolder {
             mContainer.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.onClick(mTvText.getText().toString());
+                    if(mListener != null)
+                        mListener.onClick(mTvText.getText().toString());
                 }
             });
         }

@@ -1,37 +1,28 @@
 package edu.gwu.buzzify;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import edu.gwu.buzzify.drawer.NavDrawer;
-import edu.gwu.buzzify.queues.SpotifyItem;
-import edu.gwu.buzzify.queues.SpotifyItemAdapter;
+import edu.gwu.buzzify.spotify.AllResultsFragment;
 
 /**
  * Created by cheng on 11/23/15.
  */
-public class SpotifySearchActivity extends AppCompatActivity implements SpotifyQueryListener {
+public class SpotifySearchActivity extends AppCompatActivity {
     private static final String TAG = SpotifySearchActivity.class.getName();
-
-    private RecyclerView mRvSongQueue;
-    private SpotifyItemAdapter mSpotifyItemAdapter;
-    private ArrayList<SpotifyItem> mSongInfos;
-
     private NavDrawer mDrawer;
-    private SpotifyQueryManager mQueryManager;
+    private FragmentManager mFragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,25 +33,11 @@ public class SpotifySearchActivity extends AppCompatActivity implements SpotifyQ
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         //getSupportActionBar().setDisplayShowTitleEnabled(false);
-        mSongInfos = new ArrayList<SpotifyItem>();
-        setupQueue();
 
         mDrawer = new NavDrawer(this, toolbar, "username", "email", 0);
-        mQueryManager = new SpotifyQueryManager(this, this);
+        mFragmentManager = getFragmentManager();
     }
 
-    private void setupQueue(){
-        LinearLayoutManager queueLayoutManager;
-        mRvSongQueue = (RecyclerView) findViewById(R.id.rvSearchResults);
-        mRvSongQueue.setHasFixedSize(true);
-
-        queueLayoutManager = new LinearLayoutManager(this);
-
-        mRvSongQueue.setLayoutManager(queueLayoutManager);
-
-        mSpotifyItemAdapter = new SpotifyItemAdapter(mSongInfos, this);
-        mRvSongQueue.setAdapter(mSpotifyItemAdapter);
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -79,29 +56,28 @@ public class SpotifySearchActivity extends AppCompatActivity implements SpotifyQ
         setIntent(intent);
         if(intent.getAction().equals(Intent.ACTION_SEARCH)){
             String query = intent.getStringExtra(SearchManager.QUERY);
-            mSongInfos.clear();
-            mSpotifyItemAdapter.notifyDataSetChanged();
-            mQueryManager.searchSongs(query);
+            startAllResultsFragment(query);
         }
     }
 
+    private void startAllResultsFragment(String query){
+        mFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE); //Clear all fragments
+        AllResultsFragment fragment = (AllResultsFragment)mFragmentManager.findFragmentByTag("AllResultsFragment");
 
-    @Override
-    public void onTracksParsed(List<SpotifyItem> songs) {
-        if(songs == null){
-            Toast.makeText(this, "No songs found!", Toast.LENGTH_LONG).show();
+        if(fragment != null){
+            Log.d(TAG, "Fragment still in stack, reusing");
+            fragment.newQuery(query);
             return;
         }
 
-        mSongInfos.addAll(songs);
-        mSpotifyItemAdapter.notifyDataSetChanged();
-    }
+        Log.d(TAG, "Starting AllResultsFragment");
+        fragment = new AllResultsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(AllResultsFragment.KEY_SEARCH_QUERY, query);
+        fragment.setArguments(bundle);
 
-    @Override
-    public void onQueryFailed(byte code) {
-        switch(code){
-            case SpotifyQueryManager.ERROR_CODES.ERROR_QUERY_FAILED:
-                break;
-        }
+        FragmentTransaction transaction = mFragmentManager.beginTransaction();
+        transaction.add(R.id.spotifyFragmentContainer, fragment, "AllResultsFragment");
+        transaction.commit();
     }
 }

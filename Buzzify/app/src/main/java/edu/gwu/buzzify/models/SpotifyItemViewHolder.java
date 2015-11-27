@@ -1,4 +1,4 @@
-package edu.gwu.buzzify.queues;
+package edu.gwu.buzzify.models;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +14,9 @@ public class SpotifyItemViewHolder extends RecyclerView.ViewHolder {
     private View mContainer;
     private ImageView mIvThumb;
     private TextView mTvLine1, mTvLine2, mTvLine3, mTvCount;
+    private SpotifyItemViewHolderClickListener mListener;
+
+    private int mPosition;
 
     public SpotifyItemViewHolder(View view) {
         super(view);
@@ -24,6 +27,14 @@ public class SpotifyItemViewHolder extends RecyclerView.ViewHolder {
         mTvLine2 = (TextView)view.findViewById(R.id.tvLine2);
         mTvLine3 = (TextView)view.findViewById(R.id.tvLine3);
         mTvCount = (TextView)view.findViewById(R.id.tvCount);
+
+        mContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mListener != null)
+                    mListener.onClick(mContainer, mTvLine1.getText().toString(), mPosition);
+            }
+        });
     }
 
     public void setSongTitle(String title){
@@ -49,5 +60,13 @@ public class SpotifyItemViewHolder extends RecyclerView.ViewHolder {
 
     public View getContainer(){
         return mContainer;
+    }
+
+    public void setListener(SpotifyItemViewHolderClickListener listener){
+        mListener = listener;
+    }
+
+    public void setPosition(int position){
+        mPosition = position;
     }
 }

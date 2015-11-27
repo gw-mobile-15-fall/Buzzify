@@ -1,4 +1,4 @@
-package edu.gwu.buzzify.queues;
+package edu.gwu.buzzify.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;

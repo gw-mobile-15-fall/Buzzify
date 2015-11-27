@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tvLblArtists"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:text="@string/artists"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="@dimen/default_content_margin"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvArtistSearch"
+        android:layout_below="@id/tvLblArtists"
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
+    </android.support.v7.widget.RecyclerView>
+
+    <View
+        android:id="@+id/vArtistDivider"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/divider_height"
+        android:layout_below="@id/rvArtistSearch"
+        android:layout_margin="@dimen/default_content_margin"
+        android:background="@color/shadow" />
+
+    <TextView
+        android:id="@+id/tvLblAlbums"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/vArtistDivider"
+        android:text="@string/albums"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="@dimen/default_content_margin"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvAlbumSearch"
+        android:layout_below="@id/tvLblAlbums"
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
+    </android.support.v7.widget.RecyclerView>
+
+    <View
+        android:id="@+id/vAlbumDivider"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/divider_height"
+        android:layout_below="@id/rvAlbumSearch"
+        android:layout_margin="@dimen/default_content_margin"
+        android:background="@color/shadow" />
+
+    <TextView
+        android:id="@+id/tvLblSongs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/vAlbumDivider"
+        android:text="@string/songs"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="@dimen/default_content_margin"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvSongSearch"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tvLblSongs"
+        android:layout_alignParentBottom="true">
+    </android.support.v7.widget.RecyclerView>
+</RelativeLayout>

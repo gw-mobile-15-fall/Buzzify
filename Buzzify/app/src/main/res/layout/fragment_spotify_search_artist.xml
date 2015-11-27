@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tvLblAlbums"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="@dimen/default_content_margin"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvArtistAlbums"
+        android:layout_below="@id/tvLblAlbums"
+        android:layout_width="match_parent"
+        android:layout_height="160dp">
+    </android.support.v7.widget.RecyclerView>
+
+    <View
+        android:id="@+id/vAlbumsDivider"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/divider_height"
+        android:layout_below="@id/rvArtistAlbums"
+        android:layout_margin="@dimen/default_content_margin"
+        android:background="@color/shadow" />
+
+    <TextView
+        android:id="@+id/tvLblTopSongs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/vAlbumsDivider"
+        android:text="@string/topSongs"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="@dimen/default_content_margin"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvArtistTopSongs"
+        android:layout_below="@id/tvLblTopSongs"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true">
+    </android.support.v7.widget.RecyclerView>
+</RelativeLayout>

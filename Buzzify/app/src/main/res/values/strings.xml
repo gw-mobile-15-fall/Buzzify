@@ -28,6 +28,10 @@
 
     <string name="search_title">Search</string>
     <string name="search_hint">Enter a Song, Artist, or Album</string>
+    <string name="artists">Artists</string>
+    <string name="albums">Albums</string>
+    <string name="songs">Songs</string>
+    <string name="topSongs">Top Songs</string>
 
     <string name="profile_logo_content_description">Logo</string>
     <string name="profile_title_logged_in">Your are logged in as</string>

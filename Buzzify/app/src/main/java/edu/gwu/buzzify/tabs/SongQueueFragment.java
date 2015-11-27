@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.gwu.buzzify.R;
-import edu.gwu.buzzify.queues.SpotifyItem;
-import edu.gwu.buzzify.queues.SpotifyItemAdapter;
+import edu.gwu.buzzify.models.SpotifyItem;
+import edu.gwu.buzzify.models.SpotifyItemAdapter;
 
 public class SongQueueFragment extends Fragment {
     private String TAG = SongQueueFragment.class.getName();
@@ -41,7 +41,7 @@ public class SongQueueFragment extends Fragment {
             output.add(new SpotifyItem(getString(R.string.placeholder_song),
                     getString(R.string.placeholder_artist),
                     getString(R.string.placeholder_album),
-                    "",""));
+                    "","",""));
     }
 
     private void setupQueue(View view){
@@ -53,7 +53,7 @@ public class SongQueueFragment extends Fragment {
 
         mRvSongQueue.setLayoutManager(queueLayoutManager);
 
-        mSpotifyItemAdapter = new SpotifyItemAdapter(mSongInfos, getContext());
+        mSpotifyItemAdapter = new SpotifyItemAdapter(mSongInfos, getContext(), null);
         mRvSongQueue.setAdapter(mSpotifyItemAdapter);
     }
 }

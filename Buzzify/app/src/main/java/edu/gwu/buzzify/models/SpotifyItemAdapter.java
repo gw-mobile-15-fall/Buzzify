@@ -1,4 +1,4 @@
-package edu.gwu.buzzify.queues;
+package edu.gwu.buzzify.models;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -16,12 +16,14 @@ public class SpotifyItemAdapter extends RecyclerView.Adapter<SpotifyItemViewHold
     private static final String TAG = SpotifyItemAdapter.class.getName();
     private List<SpotifyItem> mSpotifyItems;
     private Context mContext;
+    private SpotifyItemViewHolderClickListener mListener;
 
     private int mLastAnimated = -1;
 
-    public SpotifyItemAdapter(List<SpotifyItem> items, Context context){
+    public SpotifyItemAdapter(List<SpotifyItem> items, Context context, SpotifyItemViewHolderClickListener listener){
         mSpotifyItems = items;
         mContext = context;
+        mListener = listener;
     }
 
     @Override
@@ -38,6 +40,8 @@ public class SpotifyItemAdapter extends RecyclerView.Adapter<SpotifyItemViewHold
         holder.setAlbum(info.getLine3());
         holder.setAlbumIcon(info.getThumbnailUrl(), mContext);
         holder.setCount(info.getCount());
+        holder.setListener(mListener);
+        holder.setPosition(position);
 
         if(position > mLastAnimated) {
             holder.getContainer().startAnimation(AnimationUtils.loadAnimation(mContext, android.R.anim.fade_in));

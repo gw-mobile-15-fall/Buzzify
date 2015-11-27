@@ -14,17 +14,12 @@
         <include layout="@layout/view_shadow" />
 
         <LinearLayout
+            android:id="@+id/spotifyFragmentContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin"
             android:orientation="vertical">
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rvSearchResults"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-            </android.support.v7.widget.RecyclerView>
         </LinearLayout>
     </LinearLayout>
 

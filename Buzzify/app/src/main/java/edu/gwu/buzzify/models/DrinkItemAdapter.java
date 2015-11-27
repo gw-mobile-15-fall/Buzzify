@@ -1,4 +1,4 @@
-package edu.gwu.buzzify.queues;
+package edu.gwu.buzzify.models;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

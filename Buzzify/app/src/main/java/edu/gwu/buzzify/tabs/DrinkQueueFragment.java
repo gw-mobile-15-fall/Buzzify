@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.gwu.buzzify.R;
-import edu.gwu.buzzify.queues.DrinkInfo;
-import edu.gwu.buzzify.queues.DrinkItemAdapter;
+import edu.gwu.buzzify.models.DrinkInfo;
+import edu.gwu.buzzify.models.DrinkItemAdapter;
 
 
 public class DrinkQueueFragment extends Fragment {

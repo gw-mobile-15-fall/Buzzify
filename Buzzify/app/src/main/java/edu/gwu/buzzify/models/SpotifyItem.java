@@ -1,4 +1,4 @@
-package edu.gwu.buzzify.queues;
+package edu.gwu.buzzify.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -12,13 +12,15 @@ public class SpotifyItem implements Parcelable{
     private String line3;
     private String thumbnailUrl;
     private String count;
+    private String id;
 
-    public SpotifyItem(String line1, String line2, String line3, String thumbnailUrl, String count){
+    public SpotifyItem(String line1, String line2, String line3, String thumbnailUrl, String count, String id){
         this.line1 = line1;
         this.line2 = line2;
         this.line3 = line3;
         this.thumbnailUrl = thumbnailUrl;
         this.count = count;
+        this.id = id;
     }
 
     //Recreate from a Parcel in the same order the data was written out
@@ -28,6 +30,7 @@ public class SpotifyItem implements Parcelable{
         line3 = parcel.readString();
         thumbnailUrl = parcel.readString();
         count = parcel.readString();
+        id = parcel.readString();
     }
 
     public void setLine1(String text){
@@ -50,6 +53,11 @@ public class SpotifyItem implements Parcelable{
         count = text;
     }
 
+    public void setId(String id){
+        this.id = id;
+    }
+
+
     public String getLine1(){
         return line1;
     }
@@ -70,6 +78,10 @@ public class SpotifyItem implements Parcelable{
         return count;
     }
 
+    public String getId(){
+        return id;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -82,6 +94,7 @@ public class SpotifyItem implements Parcelable{
         dest.writeString(line3);
         dest.writeString(thumbnailUrl);
         dest.writeString(count);
+        dest.writeString(id);
     }
 
     //Formally used to call the constructor to recreate a SongInfo from a parcel
