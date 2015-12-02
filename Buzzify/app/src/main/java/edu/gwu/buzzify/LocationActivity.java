@@ -140,6 +140,8 @@ public class LocationActivity extends AppCompatActivity {
                 }else if(resultCode == RESULT_CANCELED){
                     //If the user hit the back button, we'll send them back to the LoginActivity
                     finish();
+                } else if (requestCode == RESULT_FIRST_USER) {
+
                 }
 
                 break;
