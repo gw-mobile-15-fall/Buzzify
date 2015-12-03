@@ -103,6 +103,10 @@ public class MainActivity extends AppCompatActivity {
                     if (e == null) {
                         mProfilePhoto = BitmapFactory.decodeByteArray(data, 0, data.length);
 
+                        if (mProfilePhoto == null) {
+                            Log.e(TAG, "BitmapFactory failed at creating bitmap from ByteArray");
+                        }
+
                         // TODO: 12/2/15 Only launches navdrawer if image download is successful...not sure if this is ok or not.
                         
                         mDrawer = new NavDrawer(MainActivity.this, mToolbar, mName, mEmail, mProfilePhoto);

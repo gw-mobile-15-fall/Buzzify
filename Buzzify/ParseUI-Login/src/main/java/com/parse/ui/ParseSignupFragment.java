@@ -45,6 +45,7 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
 
+import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 
 /**
@@ -272,14 +273,11 @@ public class ParseSignupFragment extends ParseLoginFragmentBase implements OnCli
   private void saveUserProfilePhoto(Intent data) {
     Bitmap userPhotoBitmap = (Bitmap) data.getExtras().get("data");
 
-    //Bitmap to byte array code taken from http://stackoverflow.com/questions/10191871/converting-bitmap-to-bytearray-android
+    //Bitmap to byte array code taken from http://stackoverflow.com/questions/13758560/android-bitmap-to-byte-array-and-back-skimagedecoderfactory-returned-null
 
-    int numBytes = userPhotoBitmap.getByteCount();
-
-    ByteBuffer buffer = ByteBuffer.allocate(numBytes);
-    userPhotoBitmap.copyPixelsToBuffer(buffer);
-
-    byte[] userPhotoByteArray = buffer.array();
+    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+    userPhotoBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+    byte[] userPhotoByteArray = stream.toByteArray();
 
     userPhotoParseFile = new ParseFile(USER_PHOTO_FILE, userPhotoByteArray);
 
