@@ -2,6 +2,7 @@ package edu.gwu.buzzify.drawer;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -42,7 +43,7 @@ public class NavDrawer implements DrawerViewHolderClickListener {
     private DrawerLayout mDrawer;
     private Activity mActivity;
 
-    public NavDrawer(Activity activity, Toolbar toolbar, String username, String email, int profileIconId){
+    public NavDrawer(Activity activity, Toolbar toolbar, String username, String email, Bitmap profileIcon){
         mActivity = activity;
         mRecyclerView = (RecyclerView) activity.findViewById(R.id.navDrawer);
         mRecyclerView.setHasFixedSize(true);
@@ -51,7 +52,7 @@ public class NavDrawer implements DrawerViewHolderClickListener {
         for(int i = 0; i < ROW_ITEMS.length; i++)
             mDrawerItems.add(new DrawerItem(ROW_ITEMS[i], ICON_IDS[i]));
 
-        mAdapter = new DrawerAdapter(activity, mDrawerItems, username, email, profileIconId, this);
+        mAdapter = new DrawerAdapter(activity, mDrawerItems, username, email, profileIcon, this);
         mRecyclerView.setAdapter(mAdapter);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(activity);

@@ -41,7 +41,8 @@ public class SpotifySearchActivity extends AppCompatActivity implements SpotifyF
         setSupportActionBar(toolbar);
         //getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        mDrawer = new NavDrawer(this, toolbar, "username", "email", 0);
+        // TODO: 12/2/15 update to pass real user data 
+        mDrawer = new NavDrawer(this, toolbar, "username", "email", null);
         mFragmentManager = getSupportFragmentManager();
     }
 

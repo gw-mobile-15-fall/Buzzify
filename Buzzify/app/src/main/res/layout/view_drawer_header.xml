@@ -41,8 +41,10 @@
     <de.hdodenhof.circleimageview.CircleImageView
         android:layout_width="@dimen/drawer_circlepic_size"
         android:layout_height="@dimen/drawer_circlepic_size"
-        android:src="@drawable/logo1"
         android:layout_marginLeft="@dimen/default_double_content_margin"
         android:layout_marginTop="@dimen/large_margin"
         android:id="@+id/drawerCircleView" />
+
+    <!--android:src="@drawable/logo1"-->
+
 </RelativeLayout>
