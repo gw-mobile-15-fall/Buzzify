@@ -10,10 +10,13 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
+import com.parse.ParseUser;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import edu.gwu.buzzify.LocationActivity;
+import edu.gwu.buzzify.LoginActivity;
 import edu.gwu.buzzify.MainActivity;
 import edu.gwu.buzzify.R;
 import edu.gwu.buzzify.SpotifySearchActivity;
@@ -42,6 +45,11 @@ public class NavDrawer implements DrawerViewHolderClickListener {
 
     private DrawerLayout mDrawer;
     private Activity mActivity;
+    private LogOutUser mLogOutUser;
+
+    public interface LogOutUser {
+        void logOutUser();
+    }
 
     public NavDrawer(Activity activity, Toolbar toolbar, String username, String email, Bitmap profileIcon){
         mActivity = activity;
@@ -100,7 +108,10 @@ public class NavDrawer implements DrawerViewHolderClickListener {
             //TODO
             //mActivity.startActivity(new Intent(mActivity, MainActivity.class));
         }else if(itemText.equals(LOGOUT_TEXT)){
-            //TODO
+            ParseUser.logOut();
+
+            Intent intent = new Intent(mActivity, LoginActivity.class);
+            mActivity.startActivity(intent);
         }
     }
 

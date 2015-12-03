@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
+        android:name=".BuzzifyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -24,7 +25,6 @@
             android:value="AIzaSyBpjbi0Yx6jLbLYV6eK9wqLrztaa0cLTiU"/>
 
             <!--android:value="AIzaSyD-16Q1lD7DVALfIXg7iNuLtO1r6UkwM5E"-->
-
 
         <activity
             android:name="com.parse.ui.ParseLoginActivity"

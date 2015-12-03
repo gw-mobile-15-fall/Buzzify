@@ -32,9 +32,7 @@ public class LoginActivity extends AppCompatActivity {
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
 
-        //Setup Parse
-        Parse.initialize(this);
-        Parse.setLogLevel(Parse.LOG_LEVEL_DEBUG);
+
 
         setContentView(R.layout.activity_login);
         titleTextView = (TextView) findViewById(R.id.profile_title);
