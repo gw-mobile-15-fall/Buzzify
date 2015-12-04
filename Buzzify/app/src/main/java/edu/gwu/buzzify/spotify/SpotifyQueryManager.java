@@ -191,7 +191,7 @@ public class SpotifyQueryManager {
 
             Log.d(TAG, "Artist result " + i + ": " + artistName + " (" + thumbnail + ")");
 
-            artistItems.add(new SpotifyItem(artistName, "", "", thumbnail, "", id));
+            artistItems.add(new SpotifyItem(artistName, "", "", thumbnail, id));
         }
         return artistItems;
     }
@@ -225,7 +225,7 @@ public class SpotifyQueryManager {
 
             Log.d(TAG, "Album Result " + i + ": " + albumName + ", " + albumType + " (" + albumArtUrl + ")");
 
-            albumItems.add(new SpotifyItem(albumName, albumType, "", albumArtUrl, "", id));
+            albumItems.add(new SpotifyItem(albumName, albumType, "", albumArtUrl, id));
         }
         return albumItems;
     }
@@ -274,7 +274,7 @@ public class SpotifyQueryManager {
         if(thumbnails != null && thumbnails.size() != 0)
             albumArtUrl = thumbnails.get(0).getAsJsonObject().get("url").getAsString();
 
-        return new SpotifyItem(songTitle, artistName, albumName, albumArtUrl, "", id);
+        return new SpotifyItem(songTitle, artistName, albumName, albumArtUrl, id);
     }
 
     private final Response.ErrorListener mErrorListener = new Response.ErrorListener(){

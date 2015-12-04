@@ -18,18 +18,19 @@ public class SpotifyItem implements Parcelable{
     private String line2;
     private String line3;
     private String thumbnailUrl;
-    private String count;
+    private long count;
     private String id;
 
     public SpotifyItem(){}
 
-    public SpotifyItem(String line1, String line2, String line3, String thumbnailUrl, String count, String id){
+    public SpotifyItem(String line1, String line2, String line3, String thumbnailUrl, String id){
         this.line1 = line1;
         this.line2 = line2;
         this.line3 = line3;
         this.thumbnailUrl = thumbnailUrl;
-        this.count = count;
         this.id = id;
+
+        count = 0;
     }
 
     //Recreate from a Parcel in the same order the data was written out
@@ -38,7 +39,7 @@ public class SpotifyItem implements Parcelable{
         line2 = parcel.readString();
         line3 = parcel.readString();
         thumbnailUrl = parcel.readString();
-        count = parcel.readString();
+        count = parcel.readLong();
         id = parcel.readString();
     }
 
@@ -58,8 +59,8 @@ public class SpotifyItem implements Parcelable{
         thumbnailUrl = text;
     }
 
-    public void setCount(String text){
-        count = text;
+    public void setCount(long count){
+        this.count = count;
     }
 
     public void setId(String id){
@@ -83,7 +84,7 @@ public class SpotifyItem implements Parcelable{
         return thumbnailUrl;
     }
 
-    public String getCount(){
+    public long getCount(){
         return count;
     }
 
@@ -102,7 +103,7 @@ public class SpotifyItem implements Parcelable{
         dest.writeString(line2);
         dest.writeString(line3);
         dest.writeString(thumbnailUrl);
-        dest.writeString(count);
+        dest.writeLong(count);
         dest.writeString(id);
     }
 

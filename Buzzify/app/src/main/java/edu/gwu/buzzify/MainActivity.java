@@ -20,11 +20,12 @@ import edu.gwu.buzzify.drawer.NavDrawer;
 import edu.gwu.buzzify.firebase.FirebaseManager;
 import edu.gwu.buzzify.models.SpotifyItem;
 import edu.gwu.buzzify.tabs.DrinkQueueFragment;
+import edu.gwu.buzzify.tabs.QueueFragmentInterface;
 import edu.gwu.buzzify.tabs.SongQueueFragment;
 import edu.gwu.buzzify.tabs.ViewPagerAdapter;
 
 
-public class MainActivity extends AppCompatActivity implements GetDataCallback{
+public class MainActivity extends AppCompatActivity implements GetDataCallback, QueueFragmentInterface{
     public static final int CODE_REQUEST_SEARCH_SONG = 0x00;
     public static final int CODE_RESULT_SONG_CHOSEN = 0x0A;
 
@@ -43,6 +44,8 @@ public class MainActivity extends AppCompatActivity implements GetDataCallback{
 
     private FirebaseManager mFirebaseManager;
 
+    private SongQueueFragment mSongQueueFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +59,8 @@ public class MainActivity extends AppCompatActivity implements GetDataCallback{
         mViewPager = (ViewPager) findViewById(R.id.mainViewPager);
 
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new SongQueueFragment(), "Songs");
+        mSongQueueFragment = new SongQueueFragment();
+        adapter.addFragment(mSongQueueFragment, "Songs");
         adapter.addFragment(new DrinkQueueFragment(), "Drinks");
         mViewPager.setAdapter(adapter);
 
@@ -77,7 +81,17 @@ public class MainActivity extends AppCompatActivity implements GetDataCallback{
                     SpotifyItem chosenSong = data.getParcelableExtra(SpotifySearchActivity.KEY_CHOSEN_SONG);
                     Log.d(TAG, "Chosen song: " + chosenSong.getLine1() + " by " + chosenSong.getLine2() + " on " + chosenSong.getLine3());
 
-                    mFirebaseManager.pushSpotifyItem(chosenSong);
+                    SpotifyItem searchInFragment = mSongQueueFragment.getSpotifyItem(chosenSong);
+
+                    if(searchInFragment != null) {
+                        Log.d(TAG, "Song already in queue");
+                        long count = searchInFragment.getCount();
+                        searchInFragment.setCount(++count);
+                        mFirebaseManager.pushSpotifyItem(searchInFragment);
+                    } else {
+                        chosenSong.setCount(1);
+                        mFirebaseManager.pushSpotifyItem(chosenSong);
+                    }
                 }
                 break;
         }
@@ -119,5 +133,12 @@ public class MainActivity extends AppCompatActivity implements GetDataCallback{
         } else {
             Log.e(TAG,"ParseFile getDataInBackground returned an exception");
         }
+    }
+
+    @Override
+    public void onItemPressed(SpotifyItem item) {
+        long count = item.getCount();
+        item.setCount(++count);
+        mFirebaseManager.pushSpotifyItem(item);
     }
 }

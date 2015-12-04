@@ -39,7 +39,7 @@ public class SpotifyItemAdapter extends RecyclerView.Adapter<SpotifyItemViewHold
         holder.setArtist(info.getLine2());
         holder.setAlbum(info.getLine3());
         holder.setAlbumIcon(info.getThumbnailUrl(), mContext);
-        holder.setCount(info.getCount());
+        holder.setCount("" + info.getCount());
         holder.setListener(mListener);
         holder.setPosition(position);
 

@@ -31,7 +31,7 @@ public class FirebaseManager {
 
     public void pushSpotifyItem(SpotifyItem item){
         Firebase itemRef = mQueueRef.child(item.getId());
-        itemRef.setValue(item, Long.parseLong(item.getCount()));
+        itemRef.setValue(item, item.getCount());
     }
 
     public void deleteItem(SpotifyItem item, String key){

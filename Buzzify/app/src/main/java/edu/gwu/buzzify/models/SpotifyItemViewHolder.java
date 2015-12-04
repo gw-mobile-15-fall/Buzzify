@@ -54,7 +54,11 @@ public class SpotifyItemViewHolder extends RecyclerView.ViewHolder {
             Picasso.with(context).load(url).into(mIvThumb);
     }
 
-    public void setCount(String count){
+    public void setCount(String count) {
+        if (count.equals("0")){
+            mTvCount.setText("");
+            return;
+        }
         mTvCount.setText(count);
     }
 
