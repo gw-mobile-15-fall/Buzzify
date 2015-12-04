@@ -4,6 +4,8 @@ package edu.gwu.buzzify;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -15,6 +17,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 
+import com.parse.GetDataCallback;
+import com.parse.ParseException;
+
+import edu.gwu.buzzify.common.ParseUtils;
 import edu.gwu.buzzify.drawer.NavDrawer;
 import edu.gwu.buzzify.models.SpotifyItem;
 import edu.gwu.buzzify.spotify.QueryAlbumFragment;
@@ -25,11 +31,21 @@ import edu.gwu.buzzify.spotify.SpotifyFragmentListener;
 /**
  * Created by cheng on 11/23/15.
  */
-public class SpotifySearchActivity extends AppCompatActivity implements SpotifyFragmentListener{
+public class SpotifySearchActivity extends AppCompatActivity implements SpotifyFragmentListener, GetDataCallback {
+    public static final String KEY_CHOSEN_SONG = "chosen_song";
+    public static final String KEY_STARTED_FOR_RESULT = "started_for_result";
+
     private static final String TAG = SpotifySearchActivity.class.getName();
     private NavDrawer mDrawer;
     private FragmentManager mFragmentManager;
     private SearchView mSearchView;
+    private Toolbar mToolbar;
+
+    private String mName;
+    private String mEmail;
+    private Bitmap mProfilePhoto = null;
+
+    private boolean mStartedForResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,13 +53,15 @@ public class SpotifySearchActivity extends AppCompatActivity implements SpotifyF
         setContentView(R.layout.activity_spotify_search);
 
         //Set the ActionBar for pre-Lollipop devices
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        //getSupportActionBar().setDisplayShowTitleEnabled(false);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
 
-        // TODO: 12/2/15 update to pass real user data 
-        mDrawer = new NavDrawer(this, toolbar, "username", "email", null);
+        mName = ParseUtils.getUserActualName();
+        mEmail = ParseUtils.getUserEmail();
+        ParseUtils.getUserProfilePhoto(this);
+
         mFragmentManager = getSupportFragmentManager();
+        mStartedForResult = getIntent().getBooleanExtra(KEY_STARTED_FOR_RESULT, false);
     }
 
 
@@ -61,7 +79,6 @@ public class SpotifySearchActivity extends AppCompatActivity implements SpotifyF
 
     @Override
     protected void onNewIntent(Intent intent){
-        setIntent(intent);
         if(intent.getAction().equals(Intent.ACTION_SEARCH)){
             String query = intent.getStringExtra(SearchManager.QUERY);
             mSearchView.clearFocus();
@@ -126,6 +143,14 @@ public class SpotifySearchActivity extends AppCompatActivity implements SpotifyF
     @Override
     public void onSongSelected(SpotifyItem song) {
         Log.d(TAG, "Song " + song.getLine1() + " selected");
+
+        if(mStartedForResult) {
+            Intent resultData = new Intent();
+            resultData.putExtra(KEY_CHOSEN_SONG, song);
+
+            setResult(MainActivity.CODE_RESULT_SONG_CHOSEN, resultData);
+            finish();
+        }
     }
 
     @Override
@@ -134,6 +159,23 @@ public class SpotifySearchActivity extends AppCompatActivity implements SpotifyF
             mDrawer.getDrawerLayout().closeDrawer(GravityCompat.START);
         }else{
             super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void done(byte[] data, ParseException e) {
+        if (e == null) {
+            mProfilePhoto = BitmapFactory.decodeByteArray(data, 0, data.length);
+
+            if (mProfilePhoto == null) {
+                Log.e(TAG, "BitmapFactory failed at creating bitmap from ByteArray");
+            }
+
+            //TODO placeholders if name, email, or bitmap is null
+            mDrawer = new NavDrawer(this, mToolbar, mName, mEmail, mProfilePhoto);
+
+        } else {
+            Log.e(TAG,"ParseFile getDataInBackground returned an exception");
         }
     }
 }

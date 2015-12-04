@@ -9,19 +9,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.firebase.client.DataSnapshot;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import edu.gwu.buzzify.R;
+import edu.gwu.buzzify.firebase.FirebaseEventListener;
+import edu.gwu.buzzify.firebase.FirebaseManager;
 import edu.gwu.buzzify.models.SpotifyItem;
 import edu.gwu.buzzify.models.SpotifyItemAdapter;
 
-public class SongQueueFragment extends Fragment {
+public class SongQueueFragment extends Fragment implements FirebaseEventListener {
     private String TAG = SongQueueFragment.class.getName();
 
     private RecyclerView mRvSongQueue;
     private SpotifyItemAdapter mSpotifyItemAdapter;
     private ArrayList<SpotifyItem> mSongInfos;
+    private FirebaseManager mFirebaseManager;
 
     public SongQueueFragment(){}
 
@@ -31,8 +36,10 @@ public class SongQueueFragment extends Fragment {
         View view =  inflater.inflate(R.layout.fragment_song_queue, container, false);
 
         mSongInfos = new ArrayList<SpotifyItem>();
-        createPlaceholderSongs(mSongInfos);
+        //createPlaceholderSongs(mSongInfos);
         setupQueue(view);
+
+        mFirebaseManager = new FirebaseManager(this, getActivity());
         return view;
     }
 
@@ -55,5 +62,56 @@ public class SongQueueFragment extends Fragment {
 
         mSpotifyItemAdapter = new SpotifyItemAdapter(mSongInfos, getContext(), null);
         mRvSongQueue.setAdapter(mSpotifyItemAdapter);
+    }
+
+    @Override
+    public void onItemRemoved(Object toRemove) {
+        SpotifyItem item = (SpotifyItem)toRemove;
+        mSongInfos.remove(item);
+        mSpotifyItemAdapter.notifyDataSetChanged();
+        Log.d(TAG, "Removed: " + item.getLine1());
+    }
+
+    @Override
+    public void onItemMoved(Object moved, String prevId) {
+        SpotifyItem toMove = (SpotifyItem)moved;
+        mSongInfos.remove(toMove);
+
+        SpotifyItem prevItem = new SpotifyItem();
+        prevItem.setId(prevId);
+
+        int prevIndex = mSongInfos.indexOf(prevItem);
+
+        mSongInfos.add(prevIndex, toMove);
+        Log.d(TAG, "Moved: " + toMove.getLine1() + ", to index: " + prevIndex);
+        mSpotifyItemAdapter.notifyDataSetChanged();
+
+    }
+
+    @Override
+    public void onItemAdded(Object toAdd) {
+        SpotifyItem item = (SpotifyItem)toAdd;
+        mSongInfos.add(item);
+        mSpotifyItemAdapter.notifyDataSetChanged();
+        Log.d(TAG, "Added song: " + item.getLine1());
+    }
+
+    @Override
+    public void onItemInserted(Object toInsert, String prevId) {
+        SpotifyItem prevItem = new SpotifyItem();
+        prevItem.setId(prevId);
+
+        int prevIndex = mSongInfos.indexOf(prevItem);
+
+        mSongInfos.add(prevIndex, (SpotifyItem)toInsert);
+        Log.d(TAG, "Added: " + prevIndex + ", at index: " + prevIndex);
+        mSpotifyItemAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onItemUpdated(Object item, DataSnapshot snapshot) {
+        long count = (long)snapshot.child(SpotifyItem.KEY_COUNT).getValue();
+        mSongInfos.get(mSongInfos.indexOf((SpotifyItem)item)).setCount("" + count);
+        mSpotifyItemAdapter.notifyDataSetChanged();
     }
 }

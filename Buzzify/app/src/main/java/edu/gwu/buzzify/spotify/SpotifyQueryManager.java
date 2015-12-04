@@ -32,6 +32,18 @@ public class SpotifyQueryManager {
         mListener = listener;
     }
 
+    public void searchSongById(String id){
+        handleGetSongQuery(id, API_URLS.SPOTIFY_GET_TRACK_MARKET, new Response.Listener<String>(){
+
+            @Override
+            public void onResponse(String response) {
+                JsonParser parser = new JsonParser();
+                JsonObject topObject = parser.parse(response).getAsJsonObject();
+                mListener.onSingleSongParsed(parseSingleSong(topObject));
+            }
+        });
+    }
+
     public void searchArtistById(String id){
         handleGetArtistQuery(id,
                 API_URLS.SPOTIFY_GET_ARTIST_ALBUMS,
@@ -140,6 +152,23 @@ public class SpotifyQueryManager {
         queue.add(stringRequest);
     }
 
+    private void handleGetSongQuery(String trackId, String market, Response.Listener<String> responseListener){
+        Log.d(TAG, "Retrieving track for id: " + trackId);
+
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(mContext);
+        StringBuilder url = new StringBuilder(API_URLS.SPOTIFY_GET_TRACK)
+                .append("/")
+                .append(trackId)
+                .append(market);
+
+        Log.d(TAG, "Making request to URL: " + url.toString());
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url.toString(), responseListener, mErrorListener);
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
+    }
+
     private List<SpotifyItem> parseArtistsFromQuery(String response){
         JsonParser parser = new JsonParser();
         JsonObject topObject = parser.parse(response).getAsJsonObject().get("artists").getAsJsonObject();
@@ -222,30 +251,30 @@ public class SpotifyQueryManager {
 
         for(int i = 0; i < trackListing.size(); i++){
             JsonObject track = trackListing.get(i).getAsJsonObject();
-            String songTitle = track.get("name").getAsString();
-            String artistName = track.get("artists").getAsJsonArray().get(0).getAsJsonObject().get("name").getAsString();
-            String albumName = "";
-            JsonArray thumbnails = null;
-
-            if(track.has("album")) { //If the entry point is from getting an album's tracks, we already know the album name (and it is not included in the JSON result)
-                albumName = track.get("album").getAsJsonObject().get("name").getAsString();
-                thumbnails = track.get("album").getAsJsonObject().get("images").getAsJsonArray();
-            }
-
-            String id = track.get("id").getAsString();
-
-
-            String albumArtUrl = "";
-
-            if(thumbnails != null && thumbnails.size() != 0)
-                albumArtUrl = thumbnails.get(0).getAsJsonObject().get("url").getAsString();
-
-            Log.d(TAG, "Song Result " + i + ": " + songTitle + ", " + artistName + ", " + albumName + " (" + albumArtUrl
-                    + ")");
-
-            songItems.add(new SpotifyItem(songTitle, artistName, albumName, albumArtUrl, "", id));
+            songItems.add(parseSingleSong(track));
         }
         return songItems;
+    }
+
+    private SpotifyItem parseSingleSong(JsonObject track){
+        String songTitle = track.get("name").getAsString();
+        String artistName = track.get("artists").getAsJsonArray().get(0).getAsJsonObject().get("name").getAsString();
+        String albumName = "";
+        JsonArray thumbnails = null;
+
+        if(track.has("album")) { //If the entry point is from getting an album's tracks, we already know the album name (and it is not included in the JSON result)
+            albumName = track.get("album").getAsJsonObject().get("name").getAsString();
+            thumbnails = track.get("album").getAsJsonObject().get("images").getAsJsonArray();
+        }
+
+        String id = track.get("id").getAsString();
+
+        String albumArtUrl = "";
+
+        if(thumbnails != null && thumbnails.size() != 0)
+            albumArtUrl = thumbnails.get(0).getAsJsonObject().get("url").getAsString();
+
+        return new SpotifyItem(songTitle, artistName, albumName, albumArtUrl, "", id);
     }
 
     private final Response.ErrorListener mErrorListener = new Response.ErrorListener(){

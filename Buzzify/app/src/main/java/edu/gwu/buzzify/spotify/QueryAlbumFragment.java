@@ -77,7 +77,7 @@ public class QueryAlbumFragment extends Fragment implements SpotifyQueryListener
 
         if(parent == mRvAlbumSongs){
             //TODO need to re-add album name and icon
-            mListener.onSongSelected(mAlbumSongsInfo.get(position));
+            mQueryManager.searchSongById(mAlbumSongsInfo.get(position).getId());
         }
     }
 
@@ -94,6 +94,14 @@ public class QueryAlbumFragment extends Fragment implements SpotifyQueryListener
 
         mAlbumSongsInfo.addAll(songs);
         mAlbumSongsAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onSingleSongParsed(SpotifyItem song) {
+        if(song == null)
+            return;
+
+        mListener.onSongSelected(song);
     }
 
     @Override

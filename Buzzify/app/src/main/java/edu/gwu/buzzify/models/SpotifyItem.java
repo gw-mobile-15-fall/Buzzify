@@ -7,12 +7,21 @@ import android.os.Parcelable;
  * Created by Nick on 11/26/2015.
  */
 public class SpotifyItem implements Parcelable{
+    public static final String KEY_LINE1 = "line1";
+    public static final String KEY_LINE2 = "line2";
+    public static final String KEY_LINE3 = "line3";
+    public static final String KEY_THUMBNAIL_URL = "thumbnailUrl";
+    public static final String KEY_COUNT = "count";
+    public static final String KEY_ID = "id";
+
     private String line1;
     private String line2;
     private String line3;
     private String thumbnailUrl;
     private String count;
     private String id;
+
+    public SpotifyItem(){}
 
     public SpotifyItem(String line1, String line2, String line3, String thumbnailUrl, String count, String id){
         this.line1 = line1;
@@ -109,4 +118,9 @@ public class SpotifyItem implements Parcelable{
             return new SpotifyItem[size];
         }
     };
+
+    @Override
+    public boolean equals(Object o){
+        return o instanceof SpotifyItem && ((SpotifyItem)o).getId().equals(id);
+    }
 }

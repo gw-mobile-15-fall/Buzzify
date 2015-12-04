@@ -11,6 +11,9 @@ public class API_URLS {
     public static final String SPOTIFY_GET_ALBUM = "https://api.spotify.com/v1/albums";
     public static final String SPOTIFY_GET_ALBUM_TRACKS = "/tracks?market=US";
 
+    public static final String SPOTIFY_GET_TRACK = "https://api.spotify.com/v1/tracks";
+    public static final String SPOTIFY_GET_TRACK_MARKET = "?market=US";
+
     public static final String SPOTIFY_SEARCH = "https://api.spotify.com/v1/search";
     public static final String SPOTIFY_SEARCH_QUERY = "?q=";
     public static final String SPOTIFY_SEARCH_TYPE_TRACK = "&type=track";

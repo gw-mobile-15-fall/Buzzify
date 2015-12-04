@@ -100,6 +100,11 @@ public class QueryArtistFragment extends Fragment implements SpotifyQueryListene
     }
 
     @Override
+    public void onSingleSongParsed(SpotifyItem song) {
+
+    }
+
+    @Override
     public void onQueryFailed(byte code) {
 
     }
