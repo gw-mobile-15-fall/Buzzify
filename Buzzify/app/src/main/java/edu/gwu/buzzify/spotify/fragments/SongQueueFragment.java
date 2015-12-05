@@ -1,4 +1,4 @@
-package edu.gwu.buzzify.tabs;
+package edu.gwu.buzzify.spotify.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -16,23 +16,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.gwu.buzzify.R;
+import edu.gwu.buzzify.drinks.DrinkInfo;
 import edu.gwu.buzzify.firebase.FirebaseEventListener;
 import edu.gwu.buzzify.firebase.FirebaseManager;
-import edu.gwu.buzzify.models.SpotifyItem;
-import edu.gwu.buzzify.models.SpotifyItemAdapter;
-import edu.gwu.buzzify.models.SpotifyItemViewHolderClickListener;
+import edu.gwu.buzzify.spotify.SpotifyItem;
+import edu.gwu.buzzify.spotify.SpotifyItemAdapter;
+import edu.gwu.buzzify.ViewHolderClickListener;
+import edu.gwu.buzzify.QueueFragmentInterface;
 
-public class SongQueueFragment extends Fragment implements FirebaseEventListener, SpotifyItemViewHolderClickListener {
+public class SongQueueFragment extends Fragment implements FirebaseEventListener, ViewHolderClickListener {
+    public static final String KEY_HIDE_BUTTON = "hideButton";
+
     private String TAG = SongQueueFragment.class.getName();
 
     private RecyclerView mRvSongQueue;
     private SpotifyItemAdapter mSpotifyItemAdapter;
     private ArrayList<SpotifyItem> mSongInfos;
-    private FirebaseManager mFirebaseManager;
 
     private QueueFragmentInterface mActivity;
 
     public SongQueueFragment(){}
+
+    private FirebaseManager mFirebaseManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -44,6 +49,13 @@ public class SongQueueFragment extends Fragment implements FirebaseEventListener
         setupQueue(view);
 
         mFirebaseManager = new FirebaseManager(this, getActivity());
+
+        if(getArguments() != null){
+            Bundle args = getArguments();
+            if(args.getBoolean(KEY_HIDE_BUTTON)){
+                view.findViewById(R.id.btnVoteSong).setVisibility(View.GONE);
+            }
+        }
         return view;
     }
 
@@ -70,6 +82,8 @@ public class SongQueueFragment extends Fragment implements FirebaseEventListener
 
     @Override
     public void onItemRemoved(Object toRemove) {
+        if(toRemove instanceof DrinkInfo)
+            return;
         SpotifyItem item = (SpotifyItem)toRemove;
         mSongInfos.remove(item);
         mSpotifyItemAdapter.notifyDataSetChanged();
@@ -78,6 +92,8 @@ public class SongQueueFragment extends Fragment implements FirebaseEventListener
 
     @Override
     public void onItemMoved(Object moved, String prevId) {
+        if(moved instanceof DrinkInfo)
+            return;
         SpotifyItem toMove = (SpotifyItem)moved;
         mSongInfos.remove(toMove);
 
@@ -85,6 +101,8 @@ public class SongQueueFragment extends Fragment implements FirebaseEventListener
         prevItem.setId(prevId);
 
         int prevIndex = mSongInfos.indexOf(prevItem);
+        if(prevIndex == -1)
+            prevIndex = 0;
 
         mSongInfos.add(prevIndex, toMove);
         Log.d(TAG, "Moved: " + toMove.getLine1() + ", to index: " + prevIndex);
@@ -94,6 +112,8 @@ public class SongQueueFragment extends Fragment implements FirebaseEventListener
 
     @Override
     public void onItemAdded(Object toAdd) {
+        if(toAdd instanceof DrinkInfo)
+            return;
         SpotifyItem item = (SpotifyItem)toAdd;
         mSongInfos.add(item);
         mSpotifyItemAdapter.notifyDataSetChanged();
@@ -102,18 +122,25 @@ public class SongQueueFragment extends Fragment implements FirebaseEventListener
 
     @Override
     public void onItemInserted(Object toInsert, String prevId) {
+        if(toInsert instanceof DrinkInfo)
+            return;
         SpotifyItem prevItem = new SpotifyItem();
         prevItem.setId(prevId);
 
         int prevIndex = mSongInfos.indexOf(prevItem);
 
+        if(prevIndex == -1)
+            prevIndex = 0;
+
         mSongInfos.add(prevIndex, (SpotifyItem)toInsert);
-        Log.d(TAG, "Added: " + prevIndex + ", at index: " + prevIndex);
+        Log.d(TAG, "Added: " + ((SpotifyItem) toInsert).getLine1() + ", at index: " + prevIndex);
         mSpotifyItemAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onItemUpdated(Object item, DataSnapshot snapshot) {
+        if(item instanceof DrinkInfo)
+            return;
         long count = (long)snapshot.child(SpotifyItem.KEY_COUNT).getValue();
         mSongInfos.get(mSongInfos.indexOf((SpotifyItem)item)).setCount(count);
         mSpotifyItemAdapter.notifyDataSetChanged();
@@ -137,6 +164,7 @@ public class SongQueueFragment extends Fragment implements FirebaseEventListener
 
     @Override
     public void onClick(View view, String title, int position) {
-        mActivity.onItemPressed(mSongInfos.get(position));
+        if(mActivity != null)
+            mActivity.onItemPressed(mSongInfos.get(position));
     }
 }

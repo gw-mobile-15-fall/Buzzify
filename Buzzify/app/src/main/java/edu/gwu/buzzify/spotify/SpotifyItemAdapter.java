@@ -1,4 +1,4 @@
-package edu.gwu.buzzify.models;
+package edu.gwu.buzzify.spotify;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -10,17 +10,18 @@ import android.view.animation.AnimationUtils;
 import java.util.List;
 
 import edu.gwu.buzzify.R;
+import edu.gwu.buzzify.ViewHolderClickListener;
 
 
 public class SpotifyItemAdapter extends RecyclerView.Adapter<SpotifyItemViewHolder> {
     private static final String TAG = SpotifyItemAdapter.class.getName();
     private List<SpotifyItem> mSpotifyItems;
     private Context mContext;
-    private SpotifyItemViewHolderClickListener mListener;
+    private ViewHolderClickListener mListener;
 
     private int mLastAnimated = -1;
 
-    public SpotifyItemAdapter(List<SpotifyItem> items, Context context, SpotifyItemViewHolderClickListener listener){
+    public SpotifyItemAdapter(List<SpotifyItem> items, Context context, ViewHolderClickListener listener){
         mSpotifyItems = items;
         mContext = context;
         mListener = listener;

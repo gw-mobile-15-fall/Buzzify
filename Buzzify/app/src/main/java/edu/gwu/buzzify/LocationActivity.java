@@ -14,6 +14,7 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
+import com.parse.ParseUser;
 
 import edu.gwu.buzzify.location.LocationWrapper;
 
@@ -120,6 +121,7 @@ public class LocationActivity extends AppCompatActivity {
      * @param data Includes data being returned by the activity (like the chosen Place).
      */
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "Request code = " + requestCode + ", result code = " + resultCode);
         switch(requestCode){
             case CODE_LOCATION_PICKER:
                 mShowPlacePicker = false;
@@ -127,15 +129,24 @@ public class LocationActivity extends AppCompatActivity {
                 //If the user actually selected a location
                 if(resultCode == RESULT_OK) {
                     Place place = PlacePicker.getPlace(data, this);
-                    Intent intent = new Intent(this, MainActivity.class);
 
-                    Log.d(TAG, "Preparing to start MainActivity");
-
-                    //Package the location information up to send to the MainActivity
-                    intent.putExtra(MainActivity.BUNDLE_KEY_LOCATION,
-                            new LocationWrapper(place.getAddress(), place.getLatLng()));
 
                     //Start the next activity
+                    String userType = ParseUser.getCurrentUser().getString("accountType");
+                    Intent intent = null;
+                    if(userType.equals("standard")){
+                        intent = new Intent(this, MainActivity.class);
+
+                        Log.d(TAG, "Preparing to start MainActivity");
+
+                        //Package the location information up to send to the MainActivity
+                        intent.putExtra(MainActivity.BUNDLE_KEY_LOCATION,
+                                new LocationWrapper(place.getAddress(), place.getLatLng()));
+                    }else if(userType.equals("dj") || userType.equals("bartender")){
+                        intent = new Intent(this, AdminActivity.class);
+                        intent.putExtra(AdminActivity.KEY_ADMIN_TYPE, userType);
+                    }
+
                     startActivity(intent);
                 }else if(resultCode == RESULT_CANCELED){
                     //If the user hit the back button, we'll send them back to the LoginActivity

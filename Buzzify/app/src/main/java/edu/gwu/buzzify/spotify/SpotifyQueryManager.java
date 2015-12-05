@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.gwu.buzzify.common.API_URLS;
-import edu.gwu.buzzify.models.SpotifyItem;
 
 /**
  * Created by Nick on 11/26/2015.

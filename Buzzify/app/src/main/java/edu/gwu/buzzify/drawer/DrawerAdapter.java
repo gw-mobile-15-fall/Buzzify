@@ -1,7 +1,6 @@
 package edu.gwu.buzzify.drawer;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,15 +18,16 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerViewHolder> {
     private List<DrawerItem> mDrawerItems;
     private String mUsername, mEmail;
     private int mProfilePicId;
-    private Bitmap mProfilePic;
+    //private Bitmap mProfilePic;
+    private String mProfilePicUrl;
     private Context mContext;
     private DrawerViewHolderClickListener mListener;
 
-    public DrawerAdapter(Context context, List<DrawerItem> list, String username, String email, Bitmap profilePic, DrawerViewHolderClickListener listener){
+    public DrawerAdapter(Context context, List<DrawerItem> list, String username, String email, String profilePic, DrawerViewHolderClickListener listener){
         mDrawerItems = list;
         mUsername = username;
         mEmail = email;
-        mProfilePic = profilePic;
+        mProfilePicUrl = profilePic;
         mContext = context;
         mListener = listener;
     }
@@ -48,7 +48,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerViewHolder> {
         if(holder.getType() == DrawerViewHolder.TYPE_HEADER){
             holder.setUsername(mUsername);
             holder.setEmail(mEmail);
-            holder.setProfilePic(mProfilePic);
+            holder.setProfilePic(mProfilePicUrl, mContext);
         }else{
             holder.setRowText(mDrawerItems.get(position - 1).text);
 

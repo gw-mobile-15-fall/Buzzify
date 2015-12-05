@@ -2,7 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="horizontal"
               android:layout_width="wrap_content"
-              android:layout_height="80dp">
+              android:layout_height="80dp"
+                android:clickable="true"
+                android:background="?android:attr/selectableItemBackground">
 
     <ImageView
         android:id="@+id/ivDrinkThumb"
@@ -28,5 +30,11 @@
             android:textStyle="bold"
             android:textSize="18sp"
             android:text="@string/placeholder_drink"/>
+
+        <TextView
+            android:id="@+id/tvCustomerName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/placeholder_artist"/>
     </LinearLayout>
 </RelativeLayout>

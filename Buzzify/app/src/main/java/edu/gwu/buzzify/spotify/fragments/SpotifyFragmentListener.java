@@ -1,6 +1,6 @@
-package edu.gwu.buzzify.spotify;
+package edu.gwu.buzzify.spotify.fragments;
 
-import edu.gwu.buzzify.models.SpotifyItem;
+import edu.gwu.buzzify.spotify.SpotifyItem;
 
 /**
  * Created by Nick on 11/27/2015.

@@ -19,7 +19,7 @@
  *
  */
 
-package com.parse.ui;
+package edu.gwu.buzzify;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -43,13 +43,17 @@ import com.parse.ParseFile;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
+import com.parse.ui.ParseLoginConfig;
+import com.parse.ui.ParseLoginFragmentBase;
+import com.parse.ui.ParseOnLoadingListener;
+import com.parse.ui.ParseOnLoginSuccessListener;
 
 import java.io.ByteArrayOutputStream;
 
 /**
  * Fragment for the user signup screen.
  */
-public class ParseSignupFragment extends ParseLoginFragmentBase implements OnClickListener {
+public class EditProfileFragment extends ParseLoginFragmentBase implements OnClickListener {
   public static final String USERNAME = "com.parse.ui.ParseSignupFragment.USERNAME";
   public static final String PASSWORD = "com.parse.ui.ParseSignupFragment.PASSWORD";
 
@@ -78,11 +82,11 @@ public class ParseSignupFragment extends ParseLoginFragmentBase implements OnCli
   private static final String USER_OBJECT_PHOTO = "userPhoto";
   private static final int CAMERA_REQUEST = 1000;
 
-  public static ParseSignupFragment newInstance(Bundle configOptions, String username, String password) {
-    ParseSignupFragment signupFragment = new ParseSignupFragment();
+  public static EditProfileFragment newInstance(Bundle configOptions, String username, String password) {
+    EditProfileFragment signupFragment = new EditProfileFragment();
     Bundle args = new Bundle(configOptions);
-    args.putString(ParseSignupFragment.USERNAME, username);
-    args.putString(ParseSignupFragment.PASSWORD, password);
+    args.putString(EditProfileFragment.USERNAME, username);
+    args.putString(EditProfileFragment.PASSWORD, password);
     signupFragment.setArguments(args);
     return signupFragment;
   }
@@ -106,18 +110,18 @@ public class ParseSignupFragment extends ParseLoginFragmentBase implements OnCli
     String username = (String) args.getString(USERNAME);
     String password = (String) args.getString(PASSWORD);
 
-    View v = inflater.inflate(R.layout.com_parse_ui_parse_signup_fragment,
+    View v = inflater.inflate(com.parse.ui.R.layout.com_parse_ui_parse_signup_fragment,
         parent, false);
-    ImageView appLogo = (ImageView) v.findViewById(R.id.app_logo);
-    accountTypeRadioGroup = (RadioGroup) v.findViewById(R.id.radio_group_account_type);
-    loginPreferenceCheckbox = (CheckBox) v.findViewById(R.id.checkbox_login_pref);
-    usernameField = (EditText) v.findViewById(R.id.signup_username_input);
-    passwordField = (EditText) v.findViewById(R.id.signup_password_input);
+    ImageView appLogo = (ImageView) v.findViewById(com.parse.ui.R.id.app_logo);
+    accountTypeRadioGroup = (RadioGroup) v.findViewById(com.parse.ui.R.id.radio_group_account_type);
+    loginPreferenceCheckbox = (CheckBox) v.findViewById(com.parse.ui.R.id.checkbox_login_pref);
+    usernameField = (EditText) v.findViewById(com.parse.ui.R.id.signup_username_input);
+    passwordField = (EditText) v.findViewById(com.parse.ui.R.id.signup_password_input);
     confirmPasswordField = (EditText) v
-        .findViewById(R.id.signup_confirm_password_input);
-    emailField = (EditText) v.findViewById(R.id.signup_email_input);
-    nameField = (EditText) v.findViewById(R.id.signup_name_input);
-    createAccountButton = (Button) v.findViewById(R.id.create_account);
+        .findViewById(com.parse.ui.R.id.signup_confirm_password_input);
+    emailField = (EditText) v.findViewById(com.parse.ui.R.id.signup_email_input);
+    nameField = (EditText) v.findViewById(com.parse.ui.R.id.signup_name_input);
+    createAccountButton = (Button) v.findViewById(com.parse.ui.R.id.create_account);
 
     usernameField.setText(username);
     passwordField.setText(password);
@@ -127,7 +131,7 @@ public class ParseSignupFragment extends ParseLoginFragmentBase implements OnCli
     }
 
     if (config.isParseLoginEmailAsUsername()) {
-      usernameField.setHint(R.string.com_parse_ui_email_input_hint);
+      usernameField.setHint(com.parse.ui.R.string.com_parse_ui_email_input_hint);
       usernameField.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
       if (emailField != null) {
         emailField.setVisibility(View.GONE);
@@ -181,26 +185,26 @@ public class ParseSignupFragment extends ParseLoginFragmentBase implements OnCli
 
     if (username.length() == 0) {
       if (config.isParseLoginEmailAsUsername()) {
-        showToast(R.string.com_parse_ui_no_email_toast);
+        showToast(com.parse.ui.R.string.com_parse_ui_no_email_toast);
       } else {
-        showToast(R.string.com_parse_ui_no_username_toast);
+        showToast(com.parse.ui.R.string.com_parse_ui_no_username_toast);
       }
     } else if (password.length() == 0) {
-      showToast(R.string.com_parse_ui_no_password_toast);
+      showToast(com.parse.ui.R.string.com_parse_ui_no_password_toast);
     } else if (password.length() < minPasswordLength) {
       showToast(getResources().getQuantityString(
-          R.plurals.com_parse_ui_password_too_short_toast,
+          com.parse.ui.R.plurals.com_parse_ui_password_too_short_toast,
           minPasswordLength, minPasswordLength));
     } else if (passwordAgain.length() == 0) {
-      showToast(R.string.com_parse_ui_reenter_password_toast);
+      showToast(com.parse.ui.R.string.com_parse_ui_reenter_password_toast);
     } else if (!password.equals(passwordAgain)) {
-      showToast(R.string.com_parse_ui_mismatch_confirm_password_toast);
+      showToast(com.parse.ui.R.string.com_parse_ui_mismatch_confirm_password_toast);
       confirmPasswordField.selectAll();
       confirmPasswordField.requestFocus();
     } else if (email != null && email.length() == 0) {
-      showToast(R.string.com_parse_ui_no_email_toast);
+      showToast(com.parse.ui.R.string.com_parse_ui_no_email_toast);
     } else if (name != null && name.length() == 0) {
-      showToast(R.string.com_parse_ui_no_name_toast);
+      showToast(com.parse.ui.R.string.com_parse_ui_no_name_toast);
     } else {
       user = new ParseUser();
 
@@ -219,9 +223,9 @@ public class ParseSignupFragment extends ParseLoginFragmentBase implements OnCli
       String accountType;
       int selectedAccountRadioId = accountTypeRadioGroup.getCheckedRadioButtonId();
 
-      if (selectedAccountRadioId == R.id.radio_bartender_user) {
+      if (selectedAccountRadioId == com.parse.ui.R.id.radio_bartender_user) {
         accountType = "bartender";
-      } else if (selectedAccountRadioId == R.id.radio_dj_user) {
+      } else if (selectedAccountRadioId == com.parse.ui.R.id.radio_dj_user) {
         accountType = "dj";
       } else {
         accountType = "standard";
@@ -296,20 +300,20 @@ public class ParseSignupFragment extends ParseLoginFragmentBase implements OnCli
         } else {
           loadingFinish();
           if (e != null) {
-            debugLog(getString(R.string.com_parse_ui_login_warning_parse_signup_failed) +
+            debugLog(getString(com.parse.ui.R.string.com_parse_ui_login_warning_parse_signup_failed) +
                     e.toString());
             switch (e.getCode()) {
               case ParseException.INVALID_EMAIL_ADDRESS:
-                showToast(R.string.com_parse_ui_invalid_email_toast);
+                showToast(com.parse.ui.R.string.com_parse_ui_invalid_email_toast);
                 break;
               case ParseException.USERNAME_TAKEN:
-                showToast(R.string.com_parse_ui_username_taken_toast);
+                showToast(com.parse.ui.R.string.com_parse_ui_username_taken_toast);
                 break;
               case ParseException.EMAIL_TAKEN:
-                showToast(R.string.com_parse_ui_email_taken_toast);
+                showToast(com.parse.ui.R.string.com_parse_ui_email_taken_toast);
                 break;
               default:
-                showToast(R.string.com_parse_ui_signup_failed_unknown_toast);
+                showToast(com.parse.ui.R.string.com_parse_ui_signup_failed_unknown_toast);
             }
           }
         }

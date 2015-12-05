@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.parse.Parse;
 import com.parse.ParseUser;
 import com.parse.ui.ParseLoginBuilder;
 
@@ -115,6 +114,4 @@ public class LoginActivity extends AppCompatActivity {
         nameTextView.setText("");
         loginOrLogoutButton.setText(R.string.profile_login_button_label);
     }
-
-
 }

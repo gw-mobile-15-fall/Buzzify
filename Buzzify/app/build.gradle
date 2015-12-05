@@ -34,8 +34,8 @@ dependencies {
 
     compile 'com.parse.bolts:bolts-android:1.+'
     compile 'com.parse:parse-android:1.+'
-    compile 'com.parse:parseui-login-android:0.0.1'
-    compile 'com.parse:parseui-widget-android:0.0.1'
+    compile project(':ParseUI-Login')
+    compile project(':ParseUI-Widget')
 
     compile 'com.mcxiaoke.volley:library:1.0.19'
     compile 'com.google.code.gson:gson:2.2.4'

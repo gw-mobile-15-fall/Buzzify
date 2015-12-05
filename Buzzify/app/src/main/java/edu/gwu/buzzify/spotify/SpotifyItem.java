@@ -1,4 +1,4 @@
-package edu.gwu.buzzify.models;
+package edu.gwu.buzzify.spotify;
 
 import android.os.Parcel;
 import android.os.Parcelable;

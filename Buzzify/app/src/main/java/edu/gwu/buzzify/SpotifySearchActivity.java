@@ -5,7 +5,6 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -17,21 +16,18 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 
-import com.parse.GetDataCallback;
-import com.parse.ParseException;
-
 import edu.gwu.buzzify.common.ParseUtils;
 import edu.gwu.buzzify.drawer.NavDrawer;
-import edu.gwu.buzzify.models.SpotifyItem;
-import edu.gwu.buzzify.spotify.QueryAlbumFragment;
-import edu.gwu.buzzify.spotify.QueryAllFragment;
-import edu.gwu.buzzify.spotify.QueryArtistFragment;
-import edu.gwu.buzzify.spotify.SpotifyFragmentListener;
+import edu.gwu.buzzify.spotify.SpotifyItem;
+import edu.gwu.buzzify.spotify.fragments.QueryAlbumFragment;
+import edu.gwu.buzzify.spotify.fragments.QueryAllFragment;
+import edu.gwu.buzzify.spotify.fragments.QueryArtistFragment;
+import edu.gwu.buzzify.spotify.fragments.SpotifyFragmentListener;
 
 /**
  * Created by cheng on 11/23/15.
  */
-public class SpotifySearchActivity extends AppCompatActivity implements SpotifyFragmentListener, GetDataCallback {
+public class SpotifySearchActivity extends AppCompatActivity implements SpotifyFragmentListener {
     public static final String KEY_CHOSEN_SONG = "chosen_song";
     public static final String KEY_STARTED_FOR_RESULT = "started_for_result";
 
@@ -43,6 +39,7 @@ public class SpotifySearchActivity extends AppCompatActivity implements SpotifyF
 
     private String mName;
     private String mEmail;
+    private String mProfilePicUrl;
     private Bitmap mProfilePhoto = null;
 
     private boolean mStartedForResult;
@@ -58,7 +55,10 @@ public class SpotifySearchActivity extends AppCompatActivity implements SpotifyF
 
         mName = ParseUtils.getUserActualName();
         mEmail = ParseUtils.getUserEmail();
-        ParseUtils.getUserProfilePhoto(this);
+        mProfilePicUrl = ParseUtils.getUserProfilePhotoUrl();
+
+        Log.d(TAG, "Profile pic URL: " + mProfilePicUrl);
+        mDrawer = new NavDrawer(this, mToolbar, mName, mEmail, mProfilePicUrl);
 
         mFragmentManager = getSupportFragmentManager();
         mStartedForResult = getIntent().getBooleanExtra(KEY_STARTED_FOR_RESULT, false);
@@ -147,7 +147,7 @@ public class SpotifySearchActivity extends AppCompatActivity implements SpotifyF
         if(mStartedForResult) {
             Intent resultData = new Intent();
             resultData.putExtra(KEY_CHOSEN_SONG, song);
-
+            Log.d(TAG, "Returning song in result intent");
             setResult(MainActivity.CODE_RESULT_SONG_CHOSEN, resultData);
             finish();
         }
@@ -162,20 +162,4 @@ public class SpotifySearchActivity extends AppCompatActivity implements SpotifyF
         }
     }
 
-    @Override
-    public void done(byte[] data, ParseException e) {
-        if (e == null) {
-            mProfilePhoto = BitmapFactory.decodeByteArray(data, 0, data.length);
-
-            if (mProfilePhoto == null) {
-                Log.e(TAG, "BitmapFactory failed at creating bitmap from ByteArray");
-            }
-
-            //TODO placeholders if name, email, or bitmap is null
-            mDrawer = new NavDrawer(this, mToolbar, mName, mEmail, mProfilePhoto);
-
-        } else {
-            Log.e(TAG,"ParseFile getDataInBackground returned an exception");
-        }
-    }
 }

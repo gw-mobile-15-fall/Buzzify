@@ -1,4 +1,4 @@
-package edu.gwu.buzzify.models;
+package edu.gwu.buzzify.spotify;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -9,12 +9,13 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import edu.gwu.buzzify.R;
+import edu.gwu.buzzify.ViewHolderClickListener;
 
 public class SpotifyItemViewHolder extends RecyclerView.ViewHolder {
     private View mContainer;
     private ImageView mIvThumb;
     private TextView mTvLine1, mTvLine2, mTvLine3, mTvCount;
-    private SpotifyItemViewHolderClickListener mListener;
+    private ViewHolderClickListener mListener;
 
     private int mPosition;
 
@@ -66,7 +67,7 @@ public class SpotifyItemViewHolder extends RecyclerView.ViewHolder {
         return mContainer;
     }
 
-    public void setListener(SpotifyItemViewHolderClickListener listener){
+    public void setListener(ViewHolderClickListener listener){
         mListener = listener;
     }
 

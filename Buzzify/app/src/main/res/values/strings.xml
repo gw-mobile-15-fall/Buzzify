@@ -16,9 +16,9 @@
     <string name="retry">Retry</string>
 
     <string name="most_requested_songs">Most Requested Songs</string>
-    <string name="popular_drinks">Popular Drinks</string>
+    <string name="popular_drinks">Ordered Drinks</string>
     <string name="vote_song">Vote!</string>
-    <string name="order">Order Drinks!</string>
+    <string name="order_drinks">Order Drinks!</string>
 
     <string name="placeholder_song">Placeholder Title</string>
     <string name="placeholder_artist">Placeholder Artist</string>
@@ -44,4 +44,8 @@
 
     <string name="drawer_open">Open Drawer</string>
     <string name="drawer_close">Close Drawer</string>
+
+    <string name="order_a_drink">Order A Drink!</string>
+    <string name="order">Order</string>
+    <string name="cancel">Cancel</string>
 </resources>

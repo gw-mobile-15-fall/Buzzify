@@ -2,7 +2,6 @@ package edu.gwu.buzzify;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
@@ -12,20 +11,17 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 
-import com.parse.GetDataCallback;
-import com.parse.ParseException;
-
 import edu.gwu.buzzify.common.ParseUtils;
 import edu.gwu.buzzify.drawer.NavDrawer;
+import edu.gwu.buzzify.drinks.DrinkInfo;
+import edu.gwu.buzzify.drinks.fragments.DrinkQueueFragment;
 import edu.gwu.buzzify.firebase.FirebaseManager;
-import edu.gwu.buzzify.models.SpotifyItem;
-import edu.gwu.buzzify.tabs.DrinkQueueFragment;
-import edu.gwu.buzzify.tabs.QueueFragmentInterface;
-import edu.gwu.buzzify.tabs.SongQueueFragment;
+import edu.gwu.buzzify.spotify.SpotifyItem;
+import edu.gwu.buzzify.spotify.fragments.SongQueueFragment;
 import edu.gwu.buzzify.tabs.ViewPagerAdapter;
 
 
-public class MainActivity extends AppCompatActivity implements GetDataCallback, QueueFragmentInterface{
+public class MainActivity extends AppCompatActivity implements QueueFragmentInterface, EditTextDialog.EditTextDialogListener{
     public static final int CODE_REQUEST_SEARCH_SONG = 0x00;
     public static final int CODE_RESULT_SONG_CHOSEN = 0x0A;
 
@@ -40,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements GetDataCallback, 
 
     private String mName;
     private String mEmail;
+    private String mProfilePicUrl;
     private Bitmap mProfilePhoto = null;
 
     private FirebaseManager mFirebaseManager;
@@ -68,7 +65,12 @@ public class MainActivity extends AppCompatActivity implements GetDataCallback, 
 
         mName = ParseUtils.getUserActualName();
         mEmail = ParseUtils.getUserEmail();
-        ParseUtils.getUserProfilePhoto(this);
+        //ParseUtils.getUserProfilePhoto(this);
+        mProfilePicUrl = ParseUtils.getUserProfilePhotoUrl();
+
+        Log.d(TAG, "Profile pic URL: " + mProfilePicUrl);
+        mDrawer = new NavDrawer(this, mToolbar, mName, mEmail, mProfilePicUrl);
+
 
         mFirebaseManager = new FirebaseManager(null, this);
     }
@@ -105,8 +107,13 @@ public class MainActivity extends AppCompatActivity implements GetDataCallback, 
                 startActivityForResult(voteSongIntent, CODE_REQUEST_SEARCH_SONG);
                 break;
             case R.id.btnOrderDrink:
+                showDrinksDialog();
                 break;
         }
+    }
+
+    private void showDrinksDialog(){
+        new EditTextDialog().show(getSupportFragmentManager(), "Show Drinks Dialog");
     }
 
     @Override
@@ -119,26 +126,25 @@ public class MainActivity extends AppCompatActivity implements GetDataCallback, 
     }
 
     @Override
-    public void done(byte[] data, ParseException e) {
-        if (e == null) {
-            mProfilePhoto = BitmapFactory.decodeByteArray(data, 0, data.length);
+    public void onItemPressed(Object clickedItem) {
+        if(clickedItem instanceof DrinkInfo)
+            return;
 
-            if (mProfilePhoto == null) {
-                Log.e(TAG, "BitmapFactory failed at creating bitmap from ByteArray");
-            }
-
-            //TODO placeholders if name, email, or bitmap is null
-            mDrawer = new NavDrawer(this, mToolbar, mName, mEmail, mProfilePhoto);
-
-        } else {
-            Log.e(TAG,"ParseFile getDataInBackground returned an exception");
-        }
-    }
-
-    @Override
-    public void onItemPressed(SpotifyItem item) {
+        SpotifyItem item = (SpotifyItem)clickedItem;
         long count = item.getCount();
         item.setCount(++count);
         mFirebaseManager.pushSpotifyItem(item);
+    }
+
+    @Override
+    public void onPositiveClicked(String input) {
+        Log.d(TAG, "User wants to order: " + input);
+        DrinkInfo newDrink = new DrinkInfo(input, mName, "");
+        mFirebaseManager.pushDrink(newDrink);
+    }
+
+    @Override
+    public void onCancelClicked() {
+
     }
 }

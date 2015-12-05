@@ -1,13 +1,14 @@
 package edu.gwu.buzzify.drawer;
 
-import android.graphics.Bitmap;
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-
+import com.squareup.picasso.Picasso;
 
 import edu.gwu.buzzify.R;
 
@@ -15,6 +16,7 @@ import edu.gwu.buzzify.R;
  * Created by Nick on 11/25/2015.
  */
 public class DrawerViewHolder extends RecyclerView.ViewHolder {
+    private static final String TAG = DrawerViewHolder.class.getName();
     public static final int TYPE_HEADER = 0;
     public static final int TYPE_ITEM = 1;
 
@@ -69,8 +71,10 @@ public class DrawerViewHolder extends RecyclerView.ViewHolder {
         mTvEmail.setText(email);
     }
 
-    public void setProfilePic(Bitmap profilePic){
-        
+    public void setProfilePic(String profilePicUrl, Context context){
+        Log.d(TAG, "Using URL: " + profilePicUrl);
+        Picasso.with(context).load(profilePicUrl).into(mIvCircle);
+/*
         if (profilePic != null) {
 
             mIvCircle.setImageBitmap(profilePic);
@@ -79,7 +83,7 @@ public class DrawerViewHolder extends RecyclerView.ViewHolder {
 
             // TODO: 12/2/15 Set to default image if no profile photo exists 
         }
-
+*/
 
     }
 

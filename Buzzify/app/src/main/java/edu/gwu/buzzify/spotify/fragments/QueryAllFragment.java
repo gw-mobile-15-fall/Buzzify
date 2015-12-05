@@ -1,4 +1,4 @@
-package edu.gwu.buzzify.spotify;
+package edu.gwu.buzzify.spotify.fragments;
 
 
 import android.content.Context;
@@ -15,14 +15,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.gwu.buzzify.R;
-import edu.gwu.buzzify.models.SpotifyItem;
-import edu.gwu.buzzify.models.SpotifyItemAdapter;
-import edu.gwu.buzzify.models.SpotifyItemViewHolderClickListener;
+import edu.gwu.buzzify.spotify.SpotifyItem;
+import edu.gwu.buzzify.spotify.SpotifyItemAdapter;
+import edu.gwu.buzzify.ViewHolderClickListener;
+import edu.gwu.buzzify.spotify.SpotifyQueryListener;
+import edu.gwu.buzzify.spotify.SpotifyQueryManager;
 
 /**
  * Created by Nick on 11/26/2015.
  */
-public class QueryAllFragment extends Fragment implements SpotifyQueryListener, SpotifyItemViewHolderClickListener {
+public class QueryAllFragment extends Fragment implements SpotifyQueryListener, ViewHolderClickListener {
     public static final String KEY_SEARCH_QUERY = "query";
 
     private static final String TAG = QueryAllFragment.class.getName();

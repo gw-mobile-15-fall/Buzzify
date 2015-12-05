@@ -7,7 +7,8 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 
-import edu.gwu.buzzify.models.SpotifyItem;
+import edu.gwu.buzzify.drinks.DrinkInfo;
+import edu.gwu.buzzify.spotify.SpotifyItem;
 
 /**
  * Created by cheng on 12/4/15.
@@ -15,7 +16,7 @@ import edu.gwu.buzzify.models.SpotifyItem;
 public class FirebaseManager {
     private static final String TAG = FirebaseManager.class.getName();
 
-    private Firebase mRootRef, mQueueRef;
+    private Firebase mRootRef, mSongQueueRef, mDrinkQueueRef;
     private FirebaseEventListener mListener;
 
     public FirebaseManager(FirebaseEventListener listener, Context context){
@@ -23,42 +24,62 @@ public class FirebaseManager {
 
         Firebase.setAndroidContext(context);
         mRootRef = new Firebase(Firebase_Constants.FIREBASE_URL);
-        mQueueRef = mRootRef.child(Firebase_Constants.QUEUE_KEY);
 
-        if(listener != null)
-            mQueueRef.addChildEventListener(new SongQueueEventListener());
+        mSongQueueRef = mRootRef.child(Firebase_Constants.KEY_SONG_QUEUE);
+        mDrinkQueueRef = mRootRef.child(Firebase_Constants.KEY_DRINK_QUEUE);
+
+        if(listener != null) {
+            mSongQueueRef.addChildEventListener(new SongChildListener());
+            mDrinkQueueRef.addChildEventListener(new DrinkChildListener());
+        }
     }
 
     public void pushSpotifyItem(SpotifyItem item){
-        Firebase itemRef = mQueueRef.child(item.getId());
+        Firebase itemRef = mSongQueueRef.child(item.getId());
         itemRef.setValue(item, item.getCount());
     }
 
-    public void deleteItem(SpotifyItem item, String key){
-        mQueueRef.child(key).setValue(null);
+    public void deleteSpotifyItem(SpotifyItem item){
+        mSongQueueRef.child(item.getId()).setValue(null);
     }
 
-    private class SongQueueEventListener implements ChildEventListener{
+    public void pushDrink(DrinkInfo drink){
+        Firebase pushRef = mDrinkQueueRef.push();
+        drink.setFirebaseId(pushRef.getKey());
+        pushRef.setValue(drink);
+    }
+
+    public void deleteDrinkItem(DrinkInfo item){
+        mDrinkQueueRef.child(item.getFirebaseId()).setValue(null);
+    }
+
+    private class SongChildListener implements ChildEventListener{
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String prev) {
+
             SpotifyItem item = dataSnapshot.getValue(SpotifyItem.class);
 
             if(prev != null)
                 mListener.onItemInserted(item, prev);
             else
                 mListener.onItemAdded(item);
+
         }
 
         @Override
         public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
             SpotifyItem item = dataSnapshot.getValue(SpotifyItem.class);
             mListener.onItemUpdated(item, dataSnapshot);
+
         }
 
         @Override
         public void onChildRemoved(DataSnapshot dataSnapshot) {
+
             SpotifyItem item = dataSnapshot.getValue(SpotifyItem.class);
             mListener.onItemRemoved(item);
+
         }
 
         @Override
@@ -67,6 +88,40 @@ public class FirebaseManager {
                 SpotifyItem itemMoved = dataSnapshot.getValue(SpotifyItem.class);
                 mListener.onItemMoved(itemMoved, prev);
             }
+        }
+
+        @Override
+        public void onCancelled(FirebaseError firebaseError) {}
+    }
+
+    private class DrinkChildListener implements ChildEventListener{
+        @Override
+        public void onChildAdded(DataSnapshot dataSnapshot, String prev) {
+            DrinkInfo item = dataSnapshot.getValue(DrinkInfo.class);
+
+            if(prev != null)
+                mListener.onItemInserted(item, prev);
+            else
+                mListener.onItemAdded(item);
+
+        }
+
+        @Override
+        public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+            DrinkInfo item = dataSnapshot.getValue(DrinkInfo.class);
+            mListener.onItemUpdated(item, dataSnapshot);
+
+        }
+
+        @Override
+        public void onChildRemoved(DataSnapshot dataSnapshot) {
+            DrinkInfo item = dataSnapshot.getValue(DrinkInfo.class);
+            mListener.onItemRemoved(item);
+
+        }
+
+        @Override
+        public void onChildMoved(DataSnapshot dataSnapshot, String prev) {
         }
 
         @Override
