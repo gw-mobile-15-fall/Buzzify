@@ -1,7 +1,7 @@
 package edu.gwu.buzzify.firebase;
 
 /**
- * Created by cheng on 12/4/15.
+ * Base Firebase URL and keys of the two queues.
  */
 public class Firebase_Constants {
     public static final String FIREBASE_URL = "https://buzzify.firebaseIO.com";

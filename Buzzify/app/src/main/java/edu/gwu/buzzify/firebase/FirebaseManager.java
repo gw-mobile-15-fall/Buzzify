@@ -12,14 +12,25 @@ import edu.gwu.buzzify.drinks.DrinkInfo;
 import edu.gwu.buzzify.spotify.SpotifyItem;
 
 /**
- * Created by cheng on 12/4/15.
+ * Handles interactions with Firebase.
  */
 public class FirebaseManager {
     private static final String TAG = FirebaseManager.class.getName();
 
+    //References to the root of the Firebase repo as well as the song / drink queues depending on location.
     private Firebase mRootRef, mLocationRef, mSongQueueRef, mDrinkQueueRef;
+
+    /**
+     * Receives callbacks on Firebase events.
+     */
     private FirebaseEventListener mListener;
 
+    /**
+     * Sets up Firebase references and begins listening for changes.
+     * @param listener For callbacks.
+     * @param context
+     * @param locationName Determines which song/drink queue to listen on.
+     */
     public FirebaseManager(FirebaseEventListener listener, Context context, String locationName){
         mListener = listener;
 
@@ -43,6 +54,7 @@ public class FirebaseManager {
     }
 
     public void deleteSpotifyItem(SpotifyItem item){
+        //Setting an item to null deletes it on Firebase.
         mSongQueueRef.child(item.getId()).setValue(null);
     }
 
@@ -53,9 +65,13 @@ public class FirebaseManager {
     }
 
     public void deleteDrinkItem(DrinkInfo item){
+        //Setting an item to null deletes it on Firebase.
         mDrinkQueueRef.child(item.getFirebaseId()).setValue(null);
     }
 
+    /**
+     * Listener for events on the SongQueue.
+     */
     private class SongChildListener implements ChildEventListener{
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String prev) {
@@ -97,6 +113,9 @@ public class FirebaseManager {
         public void onCancelled(FirebaseError firebaseError) {}
     }
 
+    /**
+     * Listen for events on the DrinkQueue.
+     */
     private class DrinkChildListener implements ChildEventListener{
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String prev) {

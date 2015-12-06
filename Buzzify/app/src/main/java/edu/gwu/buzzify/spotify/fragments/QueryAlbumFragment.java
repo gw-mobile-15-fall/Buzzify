@@ -13,31 +13,52 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.gwu.buzzify.R;
+import edu.gwu.buzzify.ViewHolderClickListener;
+import edu.gwu.buzzify.common.BundleKeys;
 import edu.gwu.buzzify.spotify.SpotifyItem;
 import edu.gwu.buzzify.spotify.SpotifyItemAdapter;
-import edu.gwu.buzzify.ViewHolderClickListener;
 import edu.gwu.buzzify.spotify.SpotifyQueryListener;
 import edu.gwu.buzzify.spotify.SpotifyQueryManager;
 
 /**
- * Created by Nick on 11/26/2015.
+ * Retrieves information about a given album and displays the album's songs in a RecyclerView.
  */
 public class QueryAlbumFragment extends Fragment implements SpotifyQueryListener, ViewHolderClickListener {
-    public static final String KEY_ALBUM_ID = "albumId";
-    public static final String KEY_ALBUM_NAME = "albumName";
-    public static final String KEY_ARTIST_NAME = "artistName";
-
     private static final String TAG = QueryAlbumFragment.class.getName();
 
+    /**
+     * Album's Spotify ID to search for.
+     */
     private String mAlbumId;
+
+    /**
+     * Executes querys to Spotify.
+     */
     private SpotifyQueryManager mQueryManager;
 
+    /**
+     * Displays results in a list.
+     */
     private RecyclerView mRvAlbumSongs;
+
+    /**
+     * Adapts SpotifyItem search results into the RecyclerView.
+     */
     private SpotifyItemAdapter mAlbumSongsAdapter;
+
+    /**
+     * Model objects to be displayed.
+     */
     private List<SpotifyItem> mAlbumSongsInfo;
 
+    /**
+     * Don't want to redo the search if onResumes called again if the user leaves/comes back
+     */
     private boolean mFirstSearch;
 
+    /**
+     * Alert the activity when result items are clicked.
+     */
     private SpotifyFragmentListener mListener;
 
     @Override
@@ -45,17 +66,18 @@ public class QueryAlbumFragment extends Fragment implements SpotifyQueryListener
         View view = inflater.inflate(R.layout.fragment_spotify_search_album, container, false);
 
         mQueryManager = new SpotifyQueryManager(getActivity(), this);
-        mAlbumId = getArguments().getString(KEY_ALBUM_ID);
+        mAlbumId = getArguments().getString(BundleKeys.KEY_ALBUM_ID);
 
+        //Setup variables/views for displaying results in a RecyclerView
         mRvAlbumSongs = (RecyclerView)view.findViewById(R.id.rvAlbumSongs);
         mRvAlbumSongs.setLayoutManager(new LinearLayoutManager(getActivity()));
         mAlbumSongsInfo = new ArrayList<>();
         mAlbumSongsAdapter = new SpotifyItemAdapter(mAlbumSongsInfo, getActivity(), this);
         mRvAlbumSongs.setAdapter(mAlbumSongsAdapter);
 
-        String albumName = getArguments().getString(KEY_ALBUM_NAME);
+        String albumName = getArguments().getString(BundleKeys.KEY_ALBUM_NAME);
 
-        //TODO string constants
+        //Set the title to reflect the current album being searched
         ((TextView)view.findViewById(R.id.tvLblAlbumSongs)).setText(albumName + " - Songs");
 
         mListener = (SpotifyFragmentListener)getActivity();
@@ -63,6 +85,9 @@ public class QueryAlbumFragment extends Fragment implements SpotifyQueryListener
         return view;
     }
 
+    /**
+     * Execute the search query.
+     */
     @Override
     public void onResume(){
         super.onResume();
@@ -72,15 +97,19 @@ public class QueryAlbumFragment extends Fragment implements SpotifyQueryListener
         }
     }
 
-
+    /**
+     * When a song result is pressed, go get its detailed results so we can return it to the MainActivity.
+     * @param view
+     * @param title
+     * @param position
+     */
     @Override
     public void onClick(View view, String title, int position) {
         View parent = (View)view.getParent();
 
-        if(parent == mRvAlbumSongs){
-            //TODO need to re-add album name and icon
+        if(parent == mRvAlbumSongs)
             mQueryManager.searchSongById(mAlbumSongsInfo.get(position).getId());
-        }
+
     }
 
     @Override
@@ -89,6 +118,10 @@ public class QueryAlbumFragment extends Fragment implements SpotifyQueryListener
     @Override
     public void onAlbumsParsed(List<SpotifyItem> albums) {}
 
+    /**
+     * When the tracks on an album have been found, display them in the list.
+     * @param songs
+     */
     @Override
     public void onSongsParsed(List<SpotifyItem> songs) {
         if(songs == null)
@@ -98,6 +131,10 @@ public class QueryAlbumFragment extends Fragment implements SpotifyQueryListener
         mAlbumSongsAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * Called when the single song the user taps has been queried and retrieved. Notifies the listener.
+     * @param song
+     */
     @Override
     public void onSingleSongParsed(SpotifyItem song) {
         if(song == null)

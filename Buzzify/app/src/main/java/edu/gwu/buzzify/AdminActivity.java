@@ -16,10 +16,10 @@ import edu.gwu.buzzify.spotify.SpotifyItem;
 import edu.gwu.buzzify.spotify.fragments.SongQueueFragment;
 
 /**
- * Created by cheng on 12/4/15.
+ * Main activity for admins (DJs and bartenders).
  */
 public class AdminActivity extends AppCompatActivity implements QueueFragmentInterface {
-    public static final String KEY_ADMIN_TYPE = "adminType";
+    //Admin types
     public static final String TYPE_DJ = "dj";
     public static final String TYPE_BARTENDER = "bartender";
 
@@ -31,9 +31,11 @@ public class AdminActivity extends AppCompatActivity implements QueueFragmentInt
     private SongQueueFragment mSongQueueFragment;
     private DrinkQueueFragment mDrinkQueueFragment;
 
+    //Information about the current logged in user
     private String mName;
     private String mEmail;
     private String mProfilePicUrl;
+
     private String mLocationName;
 
     private NavDrawer mDrawer;
@@ -47,24 +49,28 @@ public class AdminActivity extends AppCompatActivity implements QueueFragmentInt
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
-        mAdminType = getIntent().getStringExtra(KEY_ADMIN_TYPE);
+        mAdminType = getIntent().getStringExtra(BundleKeys.KEY_ADMIN_TYPE);
 
+        //Retrieve information about the logged in user
         mName = ParseUtils.getUserActualName();
         mEmail = ParseUtils.getUserEmail();
         mProfilePicUrl = ParseUtils.getUserProfilePhotoUrl();
         mLocationName = getIntent().getStringExtra(BundleKeys.BUNDLE_KEY_LOCATION_NAME);
 
         Bundle fragmentArgs = new Bundle();
-        fragmentArgs.putBoolean(SongQueueFragment.KEY_HIDE_BUTTON, true);
+        fragmentArgs.putBoolean(BundleKeys.KEY_HIDE_BUTTON, true);
         fragmentArgs.putString(BundleKeys.BUNDLE_KEY_LOCATION_NAME, mLocationName);
         fragmentArgs.putString(BundleKeys.BUNDLE_KEY_FULLNAME, mName);
 
+        //DJs should see the song queue
         if(mAdminType.equals(TYPE_DJ)){
             mSongQueueFragment = new SongQueueFragment();
             mSongQueueFragment.setArguments(fragmentArgs);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.add(R.id.fragmentLayout, mSongQueueFragment);
             transaction.commit();
+
+        //Bartenders should see the drink queue
         }else if(mAdminType.equals(TYPE_BARTENDER)){
             mDrinkQueueFragment = new DrinkQueueFragment();
             mDrinkQueueFragment.setArguments(fragmentArgs);
@@ -77,6 +83,10 @@ public class AdminActivity extends AppCompatActivity implements QueueFragmentInt
         mDrawer = new NavDrawer(this, mToolbar, mName, mEmail, mProfilePicUrl);
     }
 
+    /**
+     * Depending on the admin type, dequeue the item from the queue
+     * @param item
+     */
     @Override
     public void onItemPressed(Object item) {
         if(item instanceof SpotifyItem)

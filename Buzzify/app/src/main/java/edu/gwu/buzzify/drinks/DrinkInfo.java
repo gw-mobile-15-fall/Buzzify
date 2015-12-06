@@ -3,6 +3,10 @@ package edu.gwu.buzzify.drinks;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/**
+ * Represents a drink in the drink queue (i.e. an ordered drink). Contains
+ * the requested drink, the customer's name, an icon URL, and a unique id (from Firebase).
+ */
 public class DrinkInfo implements Parcelable{
     public String drinkName, customerName, iconUrl, firebaseId;
 

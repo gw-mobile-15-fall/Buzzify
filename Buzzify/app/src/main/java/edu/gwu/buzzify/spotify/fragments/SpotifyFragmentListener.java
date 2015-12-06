@@ -3,7 +3,7 @@ package edu.gwu.buzzify.spotify.fragments;
 import edu.gwu.buzzify.spotify.SpotifyItem;
 
 /**
- * Created by Nick on 11/27/2015.
+ * Listen to callback events from the Spotify Query fragments.
  */
 public interface SpotifyFragmentListener {
     void onArtistSelected(SpotifyItem artist);

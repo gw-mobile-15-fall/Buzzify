@@ -11,6 +11,9 @@ import com.squareup.picasso.Picasso;
 import edu.gwu.buzzify.R;
 import edu.gwu.buzzify.ViewHolderClickListener;
 
+/**
+ * Contains the views that represent a SpotifyItem in a RecyclerView.
+ */
 public class SpotifyItemViewHolder extends RecyclerView.ViewHolder {
     private View mContainer;
     private ImageView mIvThumb;
@@ -38,25 +41,25 @@ public class SpotifyItemViewHolder extends RecyclerView.ViewHolder {
         });
     }
 
-    public void setSongTitle(String title){
-        mTvLine1.setText(title);
+    public void setLine1(String line1){
+        mTvLine1.setText(line1);
     }
 
-    public void setArtist(String artist){
-        mTvLine2.setText(artist);
+    public void setLine2(String line2){
+        mTvLine2.setText(line2);
     }
 
-    public void setAlbum(String album){
-        mTvLine3.setText(album);
+    public void setLine3(String line3){
+        mTvLine3.setText(line3);
     }
 
-    public void setAlbumIcon(String url, Context context){
+    public void setIcon(String url, Context context){
         if(url != null && !url.equals(""))
             Picasso.with(context).load(url).into(mIvThumb);
     }
 
     public void setCount(String count) {
-        if (count.equals("0")){
+        if (count.equals("0")){ //Don't display if the count is 0
             mTvCount.setText("");
             return;
         }

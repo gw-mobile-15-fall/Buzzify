@@ -1,7 +1,7 @@
 package edu.gwu.buzzify.drawer;
 
 /**
- * Created by Nick on 11/25/2015.
+ * A drawer item consists of a title and an icon (drawable resource ID)
  */
 public class DrawerItem {
     public int iconId;

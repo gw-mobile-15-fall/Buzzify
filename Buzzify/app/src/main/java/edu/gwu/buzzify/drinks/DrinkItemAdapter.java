@@ -12,7 +12,7 @@ import edu.gwu.buzzify.R;
 import edu.gwu.buzzify.ViewHolderClickListener;
 
 /**
- * Created by cheng on 11/2/15.
+ * Adapter to display DrinkInfo items in a RecyclerView
  */
 public class DrinkItemAdapter extends RecyclerView.Adapter<DrinkViewHolder> {
     private List<DrinkInfo> mDrinkInfos;

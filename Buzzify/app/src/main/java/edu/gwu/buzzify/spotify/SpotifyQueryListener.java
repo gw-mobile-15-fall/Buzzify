@@ -3,7 +3,7 @@ package edu.gwu.buzzify.spotify;
 import java.util.List;
 
 /**
- * Created by Nick on 11/26/2015.
+ * Callbacks from the QueryManager after queries are executed.
  */
 public interface SpotifyQueryListener {
     public void onArtistsParsed(List<SpotifyItem> artists);

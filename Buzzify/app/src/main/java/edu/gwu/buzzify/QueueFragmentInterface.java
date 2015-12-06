@@ -4,7 +4,7 @@ import edu.gwu.buzzify.drinks.DrinkInfo;
 import edu.gwu.buzzify.spotify.SpotifyItem;
 
 /**
- * Created by cheng on 12/4/15.
+ * Receive callbacks from song/drink queue fragments
  */
 public interface QueueFragmentInterface {
     void onItemPressed(Object item);

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.gwu.buzzify.R;
+import edu.gwu.buzzify.common.BundleKeys;
 import edu.gwu.buzzify.spotify.SpotifyItem;
 import edu.gwu.buzzify.spotify.SpotifyItemAdapter;
 import edu.gwu.buzzify.ViewHolderClickListener;
@@ -22,21 +23,39 @@ import edu.gwu.buzzify.spotify.SpotifyQueryListener;
 import edu.gwu.buzzify.spotify.SpotifyQueryManager;
 
 /**
- * Created by Nick on 11/26/2015.
+ * Given a query, search artists, albums, and tracks and display them in their own lists.
  */
 public class QueryAllFragment extends Fragment implements SpotifyQueryListener, ViewHolderClickListener {
-    public static final String KEY_SEARCH_QUERY = "query";
-
     private static final String TAG = QueryAllFragment.class.getName();
+
+    //Indices of the different lists in the mRecyclerViews array
     private static final byte INDEX_ARTISTS = 0;
     private static final byte INDEX_ALBUMS = 1;
     private static final byte INDEX_SONGS = 2;
 
+    /**
+     * One wrapper per list <artists, albums, tracks>
+     */
     private RecyclerViewWrapper mRecyclerViews[] = new RecyclerViewWrapper[3];
+
+    /**
+     * Executes search queries.
+     */
     private SpotifyQueryManager mQueryManager;
+
+    /**
+     * The query to run.
+     */
     private String mQuery;
+
+    /**
+     * Don't want to redo the search if onResumes called again if the user leaves/comes back
+     */
     private boolean mFirstSearch;
 
+    /**
+     * Alert the activity when result items are clicked.
+     */
     private SpotifyFragmentListener mListener;
 
     @Override
@@ -44,18 +63,22 @@ public class QueryAllFragment extends Fragment implements SpotifyQueryListener, 
         Log.d(TAG, "QueryAllFragment onCreateView");
         View view = inflater.inflate(R.layout.fragment_spotify_search_all, container, false);
 
+        //Setup variables/views for displaying results in the RecyclerViews
         mRecyclerViews[INDEX_ARTISTS] = new RecyclerViewWrapper((RecyclerView)view.findViewById(R.id.rvArtistSearch), getActivity());
         mRecyclerViews[INDEX_ALBUMS] = new RecyclerViewWrapper((RecyclerView)view.findViewById(R.id.rvAlbumSearch), getActivity());
         mRecyclerViews[INDEX_SONGS] = new RecyclerViewWrapper((RecyclerView)view.findViewById(R.id.rvSongSearch), getActivity());
 
         mQueryManager = new SpotifyQueryManager(getActivity(), this);
-        mQuery = getArguments().getString(KEY_SEARCH_QUERY);
+        mQuery = getArguments().getString(BundleKeys.KEY_SEARCH_QUERY);
 
         mListener = (SpotifyFragmentListener)getActivity();
         mFirstSearch = false;
         return view;
     }
 
+    /**
+     * Execute the search query.
+     */
     @Override
     public void onResume(){
         super.onResume();
@@ -66,6 +89,10 @@ public class QueryAllFragment extends Fragment implements SpotifyQueryListener, 
         }
     }
 
+    /**
+     * Given a new query, refresh the lists.
+     * @param query
+     */
     public void newQuery(String query){
         for(RecyclerViewWrapper wrapper : mRecyclerViews){
             wrapper.data.clear();
@@ -75,6 +102,11 @@ public class QueryAllFragment extends Fragment implements SpotifyQueryListener, 
 
         mQueryManager.searchAll(query);
     }
+
+    /**
+     * Fill the artists' RecyclerView with the results.
+     * @param artists Artists matching the search query.
+     */
     @Override
     public void onArtistsParsed(List<SpotifyItem> artists) {
         if(artists == null)
@@ -85,6 +117,10 @@ public class QueryAllFragment extends Fragment implements SpotifyQueryListener, 
         Log.d(TAG, "Artists parsed");
     }
 
+    /**
+     * Fill the albums' RecyclerView with the results.
+     * @param albums Albums matching the search query.
+     */
     @Override
     public void onAlbumsParsed(List<SpotifyItem> albums) {
         if(albums == null)
@@ -95,6 +131,10 @@ public class QueryAllFragment extends Fragment implements SpotifyQueryListener, 
         Log.d(TAG, "Albums parsed");
     }
 
+    /**
+     * Fill the songs' RecyclerView with the results.
+     * @param songs Songs matching the search query.
+     */
     @Override
     public void onSongsParsed(List<SpotifyItem> songs) {
         if(songs == null)
@@ -115,6 +155,12 @@ public class QueryAllFragment extends Fragment implements SpotifyQueryListener, 
 
     }
 
+    /**
+     * Alert the activity with whatever type of view was tapped.
+     * @param view
+     * @param title
+     * @param position
+     */
     @Override
     public void onClick(View view, String title, int position) {
         View parent = (View)view.getParent();
@@ -128,6 +174,9 @@ public class QueryAllFragment extends Fragment implements SpotifyQueryListener, 
         }
     }
 
+    /**
+     * Wrapper for a RecyclerView, its adapter, and data model list.
+     */
     private class RecyclerViewWrapper{
         public RecyclerView view;
         public SpotifyItemAdapter adapter;

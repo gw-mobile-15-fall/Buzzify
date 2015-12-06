@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
+/**
+ * Keeps track of the Fragments being displayed in tabs.
+ */
 public class ViewPagerAdapter extends FragmentPagerAdapter {
     private final List<FragmentWrapper> mFragmentList = new ArrayList<>();
 

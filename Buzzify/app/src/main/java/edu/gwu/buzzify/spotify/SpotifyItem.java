@@ -4,7 +4,20 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 /**
- * Created by Nick on 11/26/2015.
+ * Represents an item retrieved from Spotify. Modeled using "lines"
+ * For example, a song is usually displayed:
+ *      Title
+ *      Artist
+ *      Album
+ *
+ * An artist might be displayed:
+ *      Artist
+ *      Genre
+ *
+ * An album might be displayed:
+ *      Album
+ *      Artist
+ *      Genre
  */
 public class SpotifyItem implements Parcelable{
     public static final String KEY_LINE1 = "line1";

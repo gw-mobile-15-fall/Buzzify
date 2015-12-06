@@ -12,17 +12,33 @@ import java.util.List;
 import edu.gwu.buzzify.R;
 
 /**
- * Created by Nick on 11/25/2015.
+ * Adapter for DrawerItem objects to be displayed in the drawer's RecyclerView
  */
 public class DrawerAdapter extends RecyclerView.Adapter<DrawerViewHolder> {
+    /**
+     * Objects to be displayed as RecyclerView items.
+     */
     private List<DrawerItem> mDrawerItems;
-    private String mUsername, mEmail;
-    private int mProfilePicId;
-    //private Bitmap mProfilePic;
-    private String mProfilePicUrl;
-    private Context mContext;
+
+    //Information for the header.
+    private String mUsername, mEmail, mProfilePicUrl;
+
+    /**
+     * Receives callbacks when menu items are clicked.
+     */
     private DrawerViewHolderClickListener mListener;
 
+    private Context mContext;
+
+    /**
+     * Sole constructor. Takes in the list of objects to display and information for the header view.
+     * @param context
+     * @param list DrawerItem objects to be displayed.
+     * @param username
+     * @param email
+     * @param profilePic
+     * @param listener
+     */
     public DrawerAdapter(Context context, List<DrawerItem> list, String username, String email, String profilePic, DrawerViewHolderClickListener listener){
         mDrawerItems = list;
         mUsername = username;
@@ -32,6 +48,12 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerViewHolder> {
         mListener = listener;
     }
 
+    /**
+     * Depending on the view type (header or not), inflate the correct layout.
+     * @param parent
+     * @param viewType
+     * @return
+     */
     @Override
     public DrawerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if(viewType == DrawerViewHolder.TYPE_HEADER){
@@ -43,6 +65,11 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerViewHolder> {
         }
     }
 
+    /**
+     * Depending on the viewtype, fill the list item with the correct information.
+     * @param holder
+     * @param position
+     */
     @Override
     public void onBindViewHolder(DrawerViewHolder holder, int position) {
         if(holder.getType() == DrawerViewHolder.TYPE_HEADER){
@@ -50,6 +77,7 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerViewHolder> {
             holder.setEmail(mEmail);
             holder.setProfilePic(mProfilePicUrl, mContext);
         }else{
+            //Position - 1 because the first element in the list is the header
             holder.setRowText(mDrawerItems.get(position - 1).text);
 
             Drawable icon = mContext.getResources().getDrawable(mDrawerItems.get(position - 1).iconId);
@@ -64,6 +92,11 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerViewHolder> {
         return mDrawerItems.size()+1; //Include header view
     }
 
+    /**
+     * First list item will be the header.
+     * @param position
+     * @return
+     */
     @Override
     public int getItemViewType(int position) {
         if (position == 0)

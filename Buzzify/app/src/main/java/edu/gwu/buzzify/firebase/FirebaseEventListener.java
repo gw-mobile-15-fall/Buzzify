@@ -3,7 +3,7 @@ package edu.gwu.buzzify.firebase;
 import com.firebase.client.DataSnapshot;
 
 /**
- * Created by cheng on 12/4/15.
+ * Listen to Firebase events. Called by the FirebaseManager.
  */
 public interface FirebaseEventListener {
     void onItemRemoved(Object toRemove);

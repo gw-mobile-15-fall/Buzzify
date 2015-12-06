@@ -13,25 +13,40 @@ import com.squareup.picasso.Picasso;
 import edu.gwu.buzzify.R;
 
 /**
- * Created by Nick on 11/25/2015.
+ * Holds views for either the header list item or a menu list item
  */
 public class DrawerViewHolder extends RecyclerView.ViewHolder {
     private static final String TAG = DrawerViewHolder.class.getName();
+
+    //View types, determines the content of this ViewHolder
     public static final int TYPE_HEADER = 0;
     public static final int TYPE_ITEM = 1;
 
+    /**
+     * Either TYPE_HEADER or TYPE_ITEM
+     */
     private int mType;
 
     private View mContainer;
+    //Menu item views
     private ImageView mIvIcon;
     private TextView mTvText;
 
+    //Header views
     private TextView mTvUsername;
     private TextView mTvEmail;
     private ImageView mIvCircle;
 
+    /**
+     * OnClick listener for menu items
+     */
     private DrawerViewHolderClickListener mListener;
 
+    /**
+     * Given the item's view and type, save references to the correct widgets.
+     * @param view
+     * @param type
+     */
     public DrawerViewHolder(View view, int type) {
         super(view);
         mContainer = view;
@@ -74,17 +89,6 @@ public class DrawerViewHolder extends RecyclerView.ViewHolder {
     public void setProfilePic(String profilePicUrl, Context context){
         Log.d(TAG, "Using URL: " + profilePicUrl);
         Picasso.with(context).load(profilePicUrl).into(mIvCircle);
-/*
-        if (profilePic != null) {
-
-            mIvCircle.setImageBitmap(profilePic);
-
-        } else {
-
-            // TODO: 12/2/15 Set to default image if no profile photo exists 
-        }
-*/
-
     }
 
     public void setListener(DrawerViewHolderClickListener listener){

@@ -1,7 +1,7 @@
 package edu.gwu.buzzify.drawer;
 
 /**
- * Created by Nick on 11/26/2015.
+ * Listen to click events on navigation drawer items
  */
 public interface DrawerViewHolderClickListener {
     public void onClick(String itemText);

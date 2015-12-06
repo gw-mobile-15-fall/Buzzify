@@ -11,7 +11,9 @@ import com.squareup.picasso.Picasso;
 import edu.gwu.buzzify.R;
 import edu.gwu.buzzify.ViewHolderClickListener;
 
-
+/**
+ * Contains the views that represent a DrinkInfo item in a RecyclerView.
+ */
 public class DrinkViewHolder extends RecyclerView.ViewHolder{
     private View mContainer;
     private ImageView mIvThumb;
@@ -48,7 +50,6 @@ public class DrinkViewHolder extends RecyclerView.ViewHolder{
         if(url == null || url.equals(""))
             return;
         Picasso.with(context).load(url).into(mIvThumb);
-        //TODO Picasso
     }
 
     public void setPosition(int position){

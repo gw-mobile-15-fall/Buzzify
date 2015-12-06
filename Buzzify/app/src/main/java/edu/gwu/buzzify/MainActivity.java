@@ -22,22 +22,32 @@ import edu.gwu.buzzify.spotify.SpotifyItem;
 import edu.gwu.buzzify.spotify.fragments.SongQueueFragment;
 import edu.gwu.buzzify.tabs.ViewPagerAdapter;
 
-
+/**
+ * MainActivity for regular user. Allows them to view both the song and drink quques.
+ */
 public class MainActivity extends AppCompatActivity implements QueueFragmentInterface, EditTextDialog.EditTextDialogListener{
     public static final int CODE_REQUEST_SEARCH_SONG = 0x00;
     public static final int CODE_RESULT_SONG_CHOSEN = 0x0A;
 
     private static final String TAG = MainActivity.class.getName();
+
+    //Widgets for a tabbed layout
     private TabLayout mTabLayout;
     private ViewPager mViewPager;
+
     private NavDrawer mDrawer;
+
     private Toolbar mToolbar;
 
+    //Information about the currently logged in user
     private String mName;
     private String mEmail;
     private String mProfilePicUrl;
     private String mLocationName;
 
+    /**
+     * Used to push new items up to Firebase
+     */
     private FirebaseManager mFirebaseManager;
 
     private SongQueueFragment mSongQueueFragment;
@@ -52,19 +62,23 @@ public class MainActivity extends AppCompatActivity implements QueueFragmentInte
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
+        //Setup tabbed layout
         mTabLayout = (TabLayout) findViewById(R.id.mainTabs);
         mViewPager = (ViewPager) findViewById(R.id.mainViewPager);
 
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
+        //Retrieve information about the currently logged in user
         mName = ParseUtils.getUserActualName();
         mEmail = ParseUtils.getUserEmail();
         mProfilePicUrl = ParseUtils.getUserProfilePhotoUrl();
         mLocationName = getIntent().getStringExtra(BundleKeys.BUNDLE_KEY_LOCATION_NAME);
 
+        //Create fragments
         mSongQueueFragment = new SongQueueFragment();
         mDrinkQueueFragment = new DrinkQueueFragment();
 
+        //Set data to send to fragments (location name and user's name)
         Bundle fragmentBundle = new Bundle();
         fragmentBundle.putString(BundleKeys.BUNDLE_KEY_LOCATION_NAME, mLocationName);
         fragmentBundle.putString(BundleKeys.BUNDLE_KEY_FULLNAME, mName);
@@ -72,35 +86,47 @@ public class MainActivity extends AppCompatActivity implements QueueFragmentInte
         mSongQueueFragment.setArguments(fragmentBundle);
         mDrinkQueueFragment.setArguments(fragmentBundle);
 
+        //Add fragments to view
         adapter.addFragment(mSongQueueFragment, "Songs");
         adapter.addFragment(mDrinkQueueFragment, "Drinks");
 
+        //Prepare tabbed layout
         mViewPager.setAdapter(adapter);
         mTabLayout.setupWithViewPager(mViewPager);
 
-        Log.d(TAG, "Profile pic URL: " + mProfilePicUrl);
+        //Setup navigation drawer
         mDrawer = new NavDrawer(this, mToolbar, mName, mEmail, mProfilePicUrl);
 
-
+        //Create FirebaseManager with no callbacks (only used to push items up)
         mFirebaseManager = new FirebaseManager(null, this, mLocationName);
     }
 
+    /**
+     * Called when the SpotifySearchActivity is finished (i.e. the user has chosen a song to vote for).
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data){
         switch (requestCode){
             case CODE_REQUEST_SEARCH_SONG:
                 if(resultCode == CODE_RESULT_SONG_CHOSEN){
-                    SpotifyItem chosenSong = data.getParcelableExtra(SpotifySearchActivity.KEY_CHOSEN_SONG);
+                    //Grab the chosen song from the Intent
+                    SpotifyItem chosenSong = data.getParcelableExtra(BundleKeys.KEY_CHOSEN_SONG);
                     Log.d(TAG, "Chosen song: " + chosenSong.getLine1() + " by " + chosenSong.getLine2() + " on " + chosenSong.getLine3());
 
+                    //The song chosen may already be in the song queue, search for it.
                     SpotifyItem searchInFragment = mSongQueueFragment.getSpotifyItem(chosenSong);
 
                     if(searchInFragment != null) {
+                        //Increment the vote on the item
                         Log.d(TAG, "Song already in queue");
                         long count = searchInFragment.getCount();
                         searchInFragment.setCount(++count);
                         mFirebaseManager.pushSpotifyItem(searchInFragment);
                     } else {
+                        //Add a new item with count = 1
                         chosenSong.setCount(1);
                         mFirebaseManager.pushSpotifyItem(chosenSong);
                     }
@@ -109,11 +135,15 @@ public class MainActivity extends AppCompatActivity implements QueueFragmentInte
         }
     }
 
+    /**
+     * If the user wants to vote for a song, go to the SpotifySearchActivity, otherwise
+     * open the order drinks dialog.
+     * @param v
+     */
     public void onClick(View v){
         switch(v.getId()){
             case R.id.btnVoteSong:
                 Intent voteSongIntent = new Intent(this, SpotifySearchActivity.class);
-                voteSongIntent.putExtra(SpotifySearchActivity.KEY_STARTED_FOR_RESULT, true);
                 startActivityForResult(voteSongIntent, CODE_REQUEST_SEARCH_SONG);
                 break;
             case R.id.btnOrderDrink:
@@ -122,10 +152,16 @@ public class MainActivity extends AppCompatActivity implements QueueFragmentInte
         }
     }
 
+    /**
+     * Display an instance of the EditText dialog for ordering drinks
+     */
     private void showDrinksDialog(){
         new EditTextDialog().show(getSupportFragmentManager(), "Show Drinks Dialog");
     }
 
+    /**
+     * If the back button is pressed, close the drawer if it is open
+     */
     @Override
     public void onBackPressed(){
         if(mDrawer.getDrawerLayout().isDrawerOpen(GravityCompat.START)){
@@ -135,6 +171,10 @@ public class MainActivity extends AppCompatActivity implements QueueFragmentInte
         }
     }
 
+    /**
+     * Push the chosen song up to Firebase
+     * @param clickedItem
+     */
     @Override
     public void onItemPressed(Object clickedItem) {
         if(clickedItem instanceof DrinkInfo)
@@ -146,6 +186,10 @@ public class MainActivity extends AppCompatActivity implements QueueFragmentInte
         mFirebaseManager.pushSpotifyItem(item);
     }
 
+    /**
+     * When a new song starts playing, make a notification. Called from the SongQueueFragment.
+     * @param item
+     */
     @Override
     public void onNewSongPlaying(SpotifyItem item) {
         Log.d(TAG, "Currently playing: " + item.getLine1() + " by " + item.getLine2());
@@ -160,6 +204,10 @@ public class MainActivity extends AppCompatActivity implements QueueFragmentInte
         mNotifyMgr.notify(1, mBuilder.build());
     }
 
+    /**
+     * When the user's drink is finished, make a notification. Called from the DrinkQueueFragment.
+     * @param info
+     */
     @Override
     public void onDrinkFinished(DrinkInfo info) {
         Log.d(TAG, "My drink is done!");
@@ -174,6 +222,10 @@ public class MainActivity extends AppCompatActivity implements QueueFragmentInte
         mNotifyMgr.notify(0, mBuilder.build());
     }
 
+    /**
+     * Called from the EditTextDialog, push up the new drink order.
+     * @param input
+     */
     @Override
     public void onPositiveClicked(String input) {
         Log.d(TAG, "User wants to order: " + input);

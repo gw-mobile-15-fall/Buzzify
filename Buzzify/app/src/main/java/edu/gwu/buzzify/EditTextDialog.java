@@ -11,8 +11,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 /**
- * Displays a simple dialog comprising of an EditText. In this case, it is used to enter
- * a new default file extension.
+ * Displays a simple dialog comprising of an EditText. Used to order drinks.
  */
 public class EditTextDialog extends DialogFragment {
     /**

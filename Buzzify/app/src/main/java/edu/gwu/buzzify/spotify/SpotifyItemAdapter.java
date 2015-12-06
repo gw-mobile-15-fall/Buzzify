@@ -12,7 +12,9 @@ import java.util.List;
 import edu.gwu.buzzify.R;
 import edu.gwu.buzzify.ViewHolderClickListener;
 
-
+/**
+ * Adapter to display SpotifyItems in a RecyclerView
+ */
 public class SpotifyItemAdapter extends RecyclerView.Adapter<SpotifyItemViewHolder> {
     private static final String TAG = SpotifyItemAdapter.class.getName();
     private List<SpotifyItem> mSpotifyItems;
@@ -36,10 +38,10 @@ public class SpotifyItemAdapter extends RecyclerView.Adapter<SpotifyItemViewHold
     @Override
     public void onBindViewHolder(SpotifyItemViewHolder holder, int position){
         SpotifyItem info = mSpotifyItems.get(position);
-        holder.setSongTitle(info.getLine1());
-        holder.setArtist(info.getLine2());
-        holder.setAlbum(info.getLine3());
-        holder.setAlbumIcon(info.getThumbnailUrl(), mContext);
+        holder.setLine1(info.getLine1());
+        holder.setLine2(info.getLine2());
+        holder.setLine3(info.getLine3());
+        holder.setIcon(info.getThumbnailUrl(), mContext);
         holder.setCount("" + info.getCount());
         holder.setListener(mListener);
         holder.setPosition(position);

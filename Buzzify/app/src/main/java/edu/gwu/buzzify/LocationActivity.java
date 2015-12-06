@@ -148,7 +148,7 @@ public class LocationActivity extends AppCompatActivity {
                         //Package the location information up to send to the MainActivity
                     }else{ // DJ or Bartender
                         intent = new Intent(this, AdminActivity.class);
-                        intent.putExtra(AdminActivity.KEY_ADMIN_TYPE, userType);
+                        intent.putExtra(BundleKeys.KEY_ADMIN_TYPE, userType);
                     }
 
                     intent.putExtra(BundleKeys.BUNDLE_KEY_LOCATION_COORDS,
