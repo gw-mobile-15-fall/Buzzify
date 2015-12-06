@@ -16,6 +16,7 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.parse.ParseUser;
 
+import edu.gwu.buzzify.common.BundleKeys;
 import edu.gwu.buzzify.location.LocationWrapper;
 
 /**
@@ -133,19 +134,26 @@ public class LocationActivity extends AppCompatActivity {
 
                     //Start the next activity
                     String userType = ParseUser.getCurrentUser().getString("accountType");
+                    String placeName = place.getName().toString().replaceAll("\\.", " ");
                     Intent intent = null;
+
+                    if(placeName.contains("("))
+                        placeName = "GPS_location";
+
                     if(userType.equals("standard")){
                         intent = new Intent(this, MainActivity.class);
 
-                        Log.d(TAG, "Preparing to start MainActivity");
+                        Log.d(TAG, "Preparing to start MainActivity, location name = " + placeName);
 
                         //Package the location information up to send to the MainActivity
-                        intent.putExtra(MainActivity.BUNDLE_KEY_LOCATION,
-                                new LocationWrapper(place.getAddress(), place.getLatLng()));
-                    }else if(userType.equals("dj") || userType.equals("bartender")){
+                    }else{ // DJ or Bartender
                         intent = new Intent(this, AdminActivity.class);
                         intent.putExtra(AdminActivity.KEY_ADMIN_TYPE, userType);
                     }
+
+                    intent.putExtra(BundleKeys.BUNDLE_KEY_LOCATION_COORDS,
+                            new LocationWrapper(place.getAddress(), place.getLatLng()));
+                    intent.putExtra(BundleKeys.BUNDLE_KEY_LOCATION_NAME, placeName);
 
                     startActivity(intent);
                 }else if(resultCode == RESULT_CANCELED){

@@ -1,9 +1,12 @@
 package edu.gwu.buzzify.drinks;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import edu.gwu.buzzify.R;
 import edu.gwu.buzzify.ViewHolderClickListener;
@@ -41,7 +44,10 @@ public class DrinkViewHolder extends RecyclerView.ViewHolder{
         mTvCustomerName.setText(name);
     }
 
-    public void setDrinkIcon(String url){
+    public void setDrinkIcon(String url, Context context){
+        if(url == null || url.equals(""))
+            return;
+        Picasso.with(context).load(url).into(mIvThumb);
         //TODO Picasso
     }
 

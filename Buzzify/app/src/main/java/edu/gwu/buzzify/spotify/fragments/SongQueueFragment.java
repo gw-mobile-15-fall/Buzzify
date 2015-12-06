@@ -15,14 +15,15 @@ import com.firebase.client.DataSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.gwu.buzzify.QueueFragmentInterface;
 import edu.gwu.buzzify.R;
+import edu.gwu.buzzify.ViewHolderClickListener;
+import edu.gwu.buzzify.common.BundleKeys;
 import edu.gwu.buzzify.drinks.DrinkInfo;
 import edu.gwu.buzzify.firebase.FirebaseEventListener;
 import edu.gwu.buzzify.firebase.FirebaseManager;
 import edu.gwu.buzzify.spotify.SpotifyItem;
 import edu.gwu.buzzify.spotify.SpotifyItemAdapter;
-import edu.gwu.buzzify.ViewHolderClickListener;
-import edu.gwu.buzzify.QueueFragmentInterface;
 
 public class SongQueueFragment extends Fragment implements FirebaseEventListener, ViewHolderClickListener {
     public static final String KEY_HIDE_BUTTON = "hideButton";
@@ -38,6 +39,7 @@ public class SongQueueFragment extends Fragment implements FirebaseEventListener
     public SongQueueFragment(){}
 
     private FirebaseManager mFirebaseManager;
+    private String mLocationName;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -48,7 +50,8 @@ public class SongQueueFragment extends Fragment implements FirebaseEventListener
         //createPlaceholderSongs(mSongInfos);
         setupQueue(view);
 
-        mFirebaseManager = new FirebaseManager(this, getActivity());
+        mLocationName = getArguments().getString(BundleKeys.BUNDLE_KEY_LOCATION_NAME);
+        mFirebaseManager = new FirebaseManager(this, getActivity(), mLocationName);
 
         if(getArguments() != null){
             Bundle args = getArguments();
@@ -88,6 +91,8 @@ public class SongQueueFragment extends Fragment implements FirebaseEventListener
         mSongInfos.remove(item);
         mSpotifyItemAdapter.notifyDataSetChanged();
         Log.d(TAG, "Removed: " + item.getLine1());
+        if(mActivity != null)
+            mActivity.onNewSongPlaying(item);
     }
 
     @Override

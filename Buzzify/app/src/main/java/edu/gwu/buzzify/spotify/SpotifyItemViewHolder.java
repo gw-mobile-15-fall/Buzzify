@@ -51,7 +51,7 @@ public class SpotifyItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void setAlbumIcon(String url, Context context){
-        if(!url.equals(""))
+        if(url != null && !url.equals(""))
             Picasso.with(context).load(url).into(mIvThumb);
     }
 

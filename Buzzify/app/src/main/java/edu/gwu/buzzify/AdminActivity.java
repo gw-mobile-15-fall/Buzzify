@@ -1,12 +1,12 @@
 package edu.gwu.buzzify;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
+import edu.gwu.buzzify.common.BundleKeys;
 import edu.gwu.buzzify.common.ParseUtils;
 import edu.gwu.buzzify.drawer.NavDrawer;
 import edu.gwu.buzzify.drinks.DrinkInfo;
@@ -34,7 +34,7 @@ public class AdminActivity extends AppCompatActivity implements QueueFragmentInt
     private String mName;
     private String mEmail;
     private String mProfilePicUrl;
-    private Bitmap mProfilePhoto = null;
+    private String mLocationName;
 
     private NavDrawer mDrawer;
 
@@ -49,8 +49,15 @@ public class AdminActivity extends AppCompatActivity implements QueueFragmentInt
 
         mAdminType = getIntent().getStringExtra(KEY_ADMIN_TYPE);
 
+        mName = ParseUtils.getUserActualName();
+        mEmail = ParseUtils.getUserEmail();
+        mProfilePicUrl = ParseUtils.getUserProfilePhotoUrl();
+        mLocationName = getIntent().getStringExtra(BundleKeys.BUNDLE_KEY_LOCATION_NAME);
+
         Bundle fragmentArgs = new Bundle();
         fragmentArgs.putBoolean(SongQueueFragment.KEY_HIDE_BUTTON, true);
+        fragmentArgs.putString(BundleKeys.BUNDLE_KEY_LOCATION_NAME, mLocationName);
+        fragmentArgs.putString(BundleKeys.BUNDLE_KEY_FULLNAME, mName);
 
         if(mAdminType.equals(TYPE_DJ)){
             mSongQueueFragment = new SongQueueFragment();
@@ -66,10 +73,6 @@ public class AdminActivity extends AppCompatActivity implements QueueFragmentInt
             transaction.commit();
         }
 
-        mName = ParseUtils.getUserActualName();
-        mEmail = ParseUtils.getUserEmail();
-        mProfilePicUrl = ParseUtils.getUserProfilePhotoUrl();
-
         Log.d(TAG, "Profile pic URL: " + mProfilePicUrl);
         mDrawer = new NavDrawer(this, mToolbar, mName, mEmail, mProfilePicUrl);
     }
@@ -77,8 +80,13 @@ public class AdminActivity extends AppCompatActivity implements QueueFragmentInt
     @Override
     public void onItemPressed(Object item) {
         if(item instanceof SpotifyItem)
-            new FirebaseManager(null, this).deleteSpotifyItem((SpotifyItem)item);
+            new FirebaseManager(null, this, mLocationName).deleteSpotifyItem((SpotifyItem)item);
         else
-            new FirebaseManager(null, this).deleteDrinkItem((DrinkInfo)item);
+            new FirebaseManager(null, this, mLocationName).deleteDrinkItem((DrinkInfo)item);
     }
+
+    @Override
+    public void onNewSongPlaying(SpotifyItem item) { }
+    @Override
+    public void onDrinkFinished(DrinkInfo drink) { }
 }

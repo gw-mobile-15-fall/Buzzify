@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import edu.gwu.buzzify.QueueFragmentInterface;
 import edu.gwu.buzzify.R;
 import edu.gwu.buzzify.ViewHolderClickListener;
+import edu.gwu.buzzify.common.BundleKeys;
 import edu.gwu.buzzify.drinks.DrinkInfo;
 import edu.gwu.buzzify.drinks.DrinkItemAdapter;
 import edu.gwu.buzzify.firebase.FirebaseEventListener;
@@ -34,6 +35,7 @@ public class DrinkQueueFragment extends Fragment implements FirebaseEventListene
     private ArrayList<DrinkInfo> mDrinkInfos;
 
     private FirebaseManager mFirebaseManager;
+    private String mLocationName, mUserFullName;
 
     private QueueFragmentInterface mActivity;
 
@@ -48,7 +50,9 @@ public class DrinkQueueFragment extends Fragment implements FirebaseEventListene
         //createPlaceholderDrinks(mDrinkInfos);
         setupQueue(view);
 
-        mFirebaseManager = new FirebaseManager(this, getActivity());
+        mLocationName = getArguments().getString(BundleKeys.BUNDLE_KEY_LOCATION_NAME);
+        mUserFullName = getArguments().getString(BundleKeys.BUNDLE_KEY_FULLNAME);
+        mFirebaseManager = new FirebaseManager(this, getActivity(), mLocationName);
 
         if(getArguments() != null){
             Bundle args = getArguments();
@@ -69,7 +73,7 @@ public class DrinkQueueFragment extends Fragment implements FirebaseEventListene
 
         mRvDrinkQueue.setLayoutManager(queueLayoutManager);
 
-        mDrinkQueueAdapter = new DrinkItemAdapter(mDrinkInfos, this);
+        mDrinkQueueAdapter = new DrinkItemAdapter(mDrinkInfos, getActivity(), this);
         mRvDrinkQueue.setAdapter(mDrinkQueueAdapter);
     }
 
@@ -81,6 +85,9 @@ public class DrinkQueueFragment extends Fragment implements FirebaseEventListene
         mDrinkInfos.remove(item);
         mDrinkQueueAdapter.notifyDataSetChanged();
         Log.d(TAG, "Removed: " + item.getDrinkName());
+
+        if(mActivity != null && item.getCustomerName().equals(mUserFullName))
+            mActivity.onDrinkFinished(item);
     }
 
     @Override
