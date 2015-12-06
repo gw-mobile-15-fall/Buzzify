@@ -47,8 +47,11 @@ import com.parse.ui.ParseLoginConfig;
 import com.parse.ui.ParseLoginFragmentBase;
 import com.parse.ui.ParseOnLoadingListener;
 import com.parse.ui.ParseOnLoginSuccessListener;
+import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
+
+import edu.gwu.buzzify.common.ParseUtils;
 
 /**
  * Fragment for the user signup screen.
@@ -62,12 +65,13 @@ public class EditProfileFragment extends ParseLoginFragmentBase implements OnCli
   private ParseFile userPhotoParseFile;
   private RadioGroup accountTypeRadioGroup;
   private CheckBox loginPreferenceCheckbox;
+  private ImageView profilePhoto;
   private EditText usernameField;
   private EditText passwordField;
   private EditText confirmPasswordField;
   private EditText emailField;
   private EditText nameField;
-  private Button createAccountButton;
+  private Button editAccountButton;
   private ParseOnLoginSuccessListener onLoginSuccessListener;
 
   private ParseLoginConfig config;
@@ -95,10 +99,6 @@ public class EditProfileFragment extends ParseLoginFragmentBase implements OnCli
   public View onCreateView(LayoutInflater inflater, ViewGroup parent,
                            Bundle savedInstanceState) {
 
-    //launch the camera
-    Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-    startActivityForResult(cameraIntent,CAMERA_REQUEST);
-
     Bundle args = getArguments();
     config = ParseLoginConfig.fromBundle(args, getActivity());
 
@@ -110,21 +110,42 @@ public class EditProfileFragment extends ParseLoginFragmentBase implements OnCli
     String username = (String) args.getString(USERNAME);
     String password = (String) args.getString(PASSWORD);
 
-    View v = inflater.inflate(com.parse.ui.R.layout.com_parse_ui_parse_signup_fragment,
+    View v = inflater.inflate(R.layout.fragment_edit_profile,
         parent, false);
-    ImageView appLogo = (ImageView) v.findViewById(com.parse.ui.R.id.app_logo);
-    accountTypeRadioGroup = (RadioGroup) v.findViewById(com.parse.ui.R.id.radio_group_account_type);
-    loginPreferenceCheckbox = (CheckBox) v.findViewById(com.parse.ui.R.id.checkbox_login_pref);
-    usernameField = (EditText) v.findViewById(com.parse.ui.R.id.signup_username_input);
-    passwordField = (EditText) v.findViewById(com.parse.ui.R.id.signup_password_input);
+    ImageView appLogo = (ImageView) v.findViewById(R.id.app_logo);
+    profilePhoto = (ImageView) v.findViewById(R.id.drawerCircleView);
+    accountTypeRadioGroup = (RadioGroup) v.findViewById(R.id.radio_group_account_type);
+    loginPreferenceCheckbox = (CheckBox) v.findViewById(R.id.checkbox_login_pref);
+    usernameField = (EditText) v.findViewById(R.id.signup_username_input);
+    passwordField = (EditText) v.findViewById(R.id.signup_password_input);
     confirmPasswordField = (EditText) v
-        .findViewById(com.parse.ui.R.id.signup_confirm_password_input);
-    emailField = (EditText) v.findViewById(com.parse.ui.R.id.signup_email_input);
-    nameField = (EditText) v.findViewById(com.parse.ui.R.id.signup_name_input);
-    createAccountButton = (Button) v.findViewById(com.parse.ui.R.id.create_account);
+        .findViewById(R.id.signup_confirm_password_input);
+    emailField = (EditText) v.findViewById(R.id.signup_email_input);
+    nameField = (EditText) v.findViewById(R.id.signup_name_input);
+    editAccountButton = (Button) v.findViewById(R.id.create_account);
 
-    usernameField.setText(username);
+    /**
+     * Sets the fields with user's previous profile data.
+     */
+
+    user = ParseUser.getCurrentUser();
+
+    Picasso.with(getActivity()).load(ParseUtils.getUserProfilePhotoUrl()).into(profilePhoto);
+
+    usernameField.setText(user.getUsername());
+    emailField.setText(user.getEmail());
+
+    if (user.getString(USER_OBJECT_AUTO_LOGIN_PREF).matches("true")) {
+      loginPreferenceCheckbox.setChecked(true);
+    } else {
+      loginPreferenceCheckbox.setChecked(false);
+    }
+
+    // TODO: 12/6/15 Set default password text as filled characters...but actually empty or some dummy text
     passwordField.setText(password);
+    confirmPasswordField.setText(password);
+
+    nameField.setText(user.getString(USER_OBJECT_NAME_FIELD));
 
     if (appLogo != null && config.getAppLogo() != null) {
       appLogo.setImageResource(config.getAppLogo());
@@ -139,9 +160,16 @@ public class EditProfileFragment extends ParseLoginFragmentBase implements OnCli
     }
 
     if (config.getParseSignupSubmitButtonText() != null) {
-      createAccountButton.setText(config.getParseSignupSubmitButtonText());
+      editAccountButton.setText(config.getParseSignupSubmitButtonText());
     }
-    createAccountButton.setOnClickListener(this);
+    editAccountButton.setOnClickListener(this);
+
+    profilePhoto.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        changeProfilePhoto();
+      }
+    });
 
     return v;
   }
@@ -162,6 +190,12 @@ public class EditProfileFragment extends ParseLoginFragmentBase implements OnCli
       throw new IllegalArgumentException(
           "Activity must implemement ParseOnLoadingListener");
     }
+  }
+
+  public void changeProfilePhoto() {
+    //launch the camera
+    Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+    startActivityForResult(cameraIntent,CAMERA_REQUEST);
   }
 
   @Override
@@ -193,8 +227,8 @@ public class EditProfileFragment extends ParseLoginFragmentBase implements OnCli
       showToast(com.parse.ui.R.string.com_parse_ui_no_password_toast);
     } else if (password.length() < minPasswordLength) {
       showToast(getResources().getQuantityString(
-          com.parse.ui.R.plurals.com_parse_ui_password_too_short_toast,
-          minPasswordLength, minPasswordLength));
+              com.parse.ui.R.plurals.com_parse_ui_password_too_short_toast,
+              minPasswordLength, minPasswordLength));
     } else if (passwordAgain.length() == 0) {
       showToast(com.parse.ui.R.string.com_parse_ui_reenter_password_toast);
     } else if (!password.equals(passwordAgain)) {
@@ -206,11 +240,16 @@ public class EditProfileFragment extends ParseLoginFragmentBase implements OnCli
     } else if (name != null && name.length() == 0) {
       showToast(com.parse.ui.R.string.com_parse_ui_no_name_toast);
     } else {
-      user = new ParseUser();
+
+//      user = new ParseUser();
 
       // Set standard fields
       user.setUsername(username);
-      user.setPassword(password);
+
+      if (!password.isEmpty()) {
+        user.setPassword(password);
+      }
+
       user.setEmail(email);
 
       // Set additional custom fields only if the user filled it out
@@ -220,18 +259,18 @@ public class EditProfileFragment extends ParseLoginFragmentBase implements OnCli
 
       //Set account type
 
-      String accountType;
-      int selectedAccountRadioId = accountTypeRadioGroup.getCheckedRadioButtonId();
+//      String accountType;
+//      int selectedAccountRadioId = accountTypeRadioGroup.getCheckedRadioButtonId();
+//
+//      if (selectedAccountRadioId == com.parse.ui.R.id.radio_bartender_user) {
+//        accountType = "bartender";
+//      } else if (selectedAccountRadioId == com.parse.ui.R.id.radio_dj_user) {
+//        accountType = "dj";
+//      } else {
+//        accountType = "standard";
+//      }
 
-      if (selectedAccountRadioId == com.parse.ui.R.id.radio_bartender_user) {
-        accountType = "bartender";
-      } else if (selectedAccountRadioId == com.parse.ui.R.id.radio_dj_user) {
-        accountType = "dj";
-      } else {
-        accountType = "standard";
-      }
-
-      user.put(USER_OBJECT_ACCOUNT_TYPE, accountType);
+//      user.put(USER_OBJECT_ACCOUNT_TYPE, accountType);
 
       //Set login preference
 
@@ -245,6 +284,54 @@ public class EditProfileFragment extends ParseLoginFragmentBase implements OnCli
       sendUserDataToParse();
 
     }
+  }
+
+  private boolean userDataIsValid(String username, String name, String email, String password, String passwordAgain) {
+    boolean dataOk = false;
+
+    if (usernameNameAndEmailIsValid(username, name, email) && passwordIsValid(password, passwordAgain)) {
+      dataOk = true;
+    }
+
+    return dataOk;
+  }
+
+  private boolean usernameNameAndEmailIsValid(String username, String name, String email) {
+    boolean dataOk = false;
+
+    if (username.length() == 0) {
+      if (config.isParseLoginEmailAsUsername()) {
+        showToast(com.parse.ui.R.string.com_parse_ui_no_email_toast);
+      } else {
+        showToast(com.parse.ui.R.string.com_parse_ui_no_username_toast);
+      }
+    }else if (email != null && email.length() == 0) {
+      showToast(com.parse.ui.R.string.com_parse_ui_no_email_toast);
+    } else if (name != null && name.length() == 0) {
+      showToast(com.parse.ui.R.string.com_parse_ui_no_name_toast);
+    } else {
+      dataOk = true;
+    }
+
+    return dataOk;
+  }
+
+  private boolean passwordIsValid(String password, String passwordAgain) {
+    boolean dataOk = false;
+
+    if (password.length() < minPasswordLength) {
+      showToast(getResources().getQuantityString(
+              com.parse.ui.R.plurals.com_parse_ui_password_too_short_toast,
+              minPasswordLength, minPasswordLength));
+    } else if (!password.equals(passwordAgain)) {
+      showToast(com.parse.ui.R.string.com_parse_ui_mismatch_confirm_password_toast);
+      confirmPasswordField.selectAll();
+      confirmPasswordField.requestFocus();
+    } else {
+      dataOk = true;
+    }
+
+    return dataOk;
   }
 
   @Override
@@ -262,14 +349,19 @@ public class EditProfileFragment extends ParseLoginFragmentBase implements OnCli
 
     loadingStart();
 
-    //send photo to parse
-    userPhotoParseFile.saveInBackground(new SaveCallback() {
-      @Override
-      public void done(ParseException e) {
-        user.put(USER_OBJECT_PHOTO, userPhotoParseFile);
-        signUpNewUser();
-      }
-    });
+    if (userPhotoParseFile == null) {
+      editUser();
+    } else {
+
+      //send photo to parse
+      userPhotoParseFile.saveInBackground(new SaveCallback() {
+        @Override
+        public void done(ParseException e) {
+          user.put(USER_OBJECT_PHOTO, userPhotoParseFile);
+          editUser();
+        }
+      });
+    }
   }
 
   private void saveUserProfilePhoto(Intent data) {
@@ -283,11 +375,13 @@ public class EditProfileFragment extends ParseLoginFragmentBase implements OnCli
 
     userPhotoParseFile = new ParseFile(USER_PHOTO_FILE, userPhotoByteArray);
 
+    //Update photo in edit profile
+    profilePhoto.setImageBitmap(userPhotoBitmap);
+
   }
 
-  private void signUpNewUser() {
-    user.signUpInBackground(new SignUpCallback() {
-
+  private void editUser() {
+    user.saveInBackground(new SaveCallback() {
       @Override
       public void done(ParseException e) {
         if (isActivityDestroyed()) {
@@ -296,7 +390,7 @@ public class EditProfileFragment extends ParseLoginFragmentBase implements OnCli
 
         if (e == null) {
           loadingFinish();
-          signupSuccess();
+          editSuccess();
         } else {
           loadingFinish();
           if (e != null) {
@@ -326,7 +420,7 @@ public class EditProfileFragment extends ParseLoginFragmentBase implements OnCli
     return LOG_TAG;
   }
 
-  private void signupSuccess() {
+  private void editSuccess() {
     onLoginSuccessListener.onLoginSuccess();
   }
 }
