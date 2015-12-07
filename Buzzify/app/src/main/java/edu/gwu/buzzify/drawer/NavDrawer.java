@@ -110,6 +110,30 @@ public class NavDrawer implements DrawerViewHolderClickListener {
     }
 
     /**
+     * Called to change the user's full name as displayed in the header.
+     * @param fullName
+     */
+    public void setFullName(String fullName){
+        mAdapter.setHeaderFullname(fullName);
+    }
+
+    /**
+     * Called to change the user's email as displayed in the header.
+     * @param email
+     */
+    public void setEmail(String email){
+        mAdapter.setHeaderEmail(email);
+    }
+
+    /**
+     * Called to change the user's profile pic as displayed in the header.
+     * @param profilePic
+     */
+    public void setProfilePic(String profilePic){
+        mAdapter.setProfilePicUrl(profilePic);
+    }
+
+    /**
      * Called when drawer items are clicked. Starts the corresponding activity (if it is not the current activity).
      * @param itemText The text of the menu item clicked.
      */

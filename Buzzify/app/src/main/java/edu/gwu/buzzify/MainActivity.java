@@ -10,6 +10,9 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import edu.gwu.buzzify.common.BundleKeys;
@@ -99,6 +102,47 @@ public class MainActivity extends AppCompatActivity implements QueueFragmentInte
 
         //Create FirebaseManager with no callbacks (only used to push items up)
         mFirebaseManager = new FirebaseManager(null, this, mLocationName);
+    }
+
+    /**
+     * Reference the NavDrawer's header if the user is returning from the EditProfile activity
+     * Otherwise nothing will change.
+     */
+    @Override
+    public void onResume(){
+        super.onResume();
+        Log.d(TAG, "onResume");
+        mName = ParseUtils.getUserActualName();
+        mEmail = ParseUtils.getUserEmail();
+        mProfilePicUrl = ParseUtils.getUserProfilePhotoUrl();
+
+        if(mDrawer != null){
+            mDrawer.setFullName(mName);
+            mDrawer.setEmail(mEmail);
+            mDrawer.setProfilePic(mProfilePicUrl);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.action_share:
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND);
+                shareIntent.putExtra(Intent.EXTRA_TEXT, "I'm at: " + mLocationName + " listening to music and ordering drinks!");
+                shareIntent.setType("text/plain");
+                startActivity(shareIntent);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /**
