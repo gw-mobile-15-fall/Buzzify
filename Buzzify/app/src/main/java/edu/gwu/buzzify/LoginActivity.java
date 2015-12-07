@@ -31,6 +31,15 @@ public class LoginActivity extends AppCompatActivity {
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
 
+        currentUser = ParseUser.getCurrentUser();
+
+        if ((currentUser != null) && currentUser.getString("autoLogin") != null &&
+                (currentUser.getString("autoLogin").matches("false"))) {
+
+            ParseUser.logOut();
+            currentUser = null;
+        }
+
 
 
         setContentView(R.layout.activity_login);
@@ -74,14 +83,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onStart();
 
         currentUser = ParseUser.getCurrentUser();
-
-        if ((currentUser != null) && currentUser.getString("autoLogin") != null &&
-                (currentUser.getString("autoLogin").matches("false"))) {
-            
-            ParseUser.logOut();
-            currentUser = null;
-        }
-
+        
         if (currentUser != null) {
             showProfileLoggedIn();
         } else {
