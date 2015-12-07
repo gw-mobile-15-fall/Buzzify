@@ -26,21 +26,15 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-        //Set the ActionBar for pre-Lollipop devices
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-
         currentUser = ParseUser.getCurrentUser();
 
+        //Logs out a user if they have the auto-login setting disabled
         if ((currentUser != null) && currentUser.getString("autoLogin") != null &&
                 (currentUser.getString("autoLogin").matches("false"))) {
 
             ParseUser.logOut();
             currentUser = null;
         }
-
-
 
         setContentView(R.layout.activity_login);
         titleTextView = (TextView) findViewById(R.id.profile_title);

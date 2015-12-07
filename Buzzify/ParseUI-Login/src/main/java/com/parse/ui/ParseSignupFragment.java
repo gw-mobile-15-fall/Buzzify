@@ -54,7 +54,6 @@ public class ParseSignupFragment extends ParseLoginFragmentBase implements OnCli
   public static final String USERNAME = "com.parse.ui.ParseSignupFragment.USERNAME";
   public static final String PASSWORD = "com.parse.ui.ParseSignupFragment.PASSWORD";
 
-  private boolean photoSentSuccess = false;
   private ParseUser user;
   private ParseFile userPhotoParseFile;
   private RadioGroup accountTypeRadioGroup;
