@@ -66,7 +66,7 @@ public class EditProfileFragment extends ParseLoginFragmentBase implements OnCli
   private RadioGroup accountTypeRadioGroup;
   private CheckBox loginPreferenceCheckbox;
   private ImageView profilePhoto;
-  private EditText usernameField;
+  //private EditText usernameField;
   private EditText passwordField;
   private EditText confirmPasswordField;
   private EditText emailField;
@@ -116,7 +116,7 @@ public class EditProfileFragment extends ParseLoginFragmentBase implements OnCli
     profilePhoto = (ImageView) v.findViewById(R.id.drawerCircleView);
     accountTypeRadioGroup = (RadioGroup) v.findViewById(R.id.radio_group_account_type);
     loginPreferenceCheckbox = (CheckBox) v.findViewById(R.id.checkbox_login_pref);
-    usernameField = (EditText) v.findViewById(R.id.signup_username_input);
+    //usernameField = (EditText) v.findViewById(R.id.signup_username_input);
     passwordField = (EditText) v.findViewById(R.id.signup_password_input);
     confirmPasswordField = (EditText) v
         .findViewById(R.id.signup_confirm_password_input);
@@ -132,7 +132,7 @@ public class EditProfileFragment extends ParseLoginFragmentBase implements OnCli
 
     Picasso.with(getActivity()).load(ParseUtils.getUserProfilePhotoUrl()).into(profilePhoto);
 
-    usernameField.setText(user.getUsername());
+    //usernameField.setText(user.getUsername());
     emailField.setText(user.getEmail());
 
     if (user.getString(USER_OBJECT_AUTO_LOGIN_PREF).matches("true")) {
@@ -151,13 +151,13 @@ public class EditProfileFragment extends ParseLoginFragmentBase implements OnCli
       appLogo.setImageResource(config.getAppLogo());
     }
 
-    if (config.isParseLoginEmailAsUsername()) {
-      usernameField.setHint(com.parse.ui.R.string.com_parse_ui_email_input_hint);
-      usernameField.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-      if (emailField != null) {
-        emailField.setVisibility(View.GONE);
-      }
-    }
+//    if (config.isParseLoginEmailAsUsername()) {
+//      usernameField.setHint(com.parse.ui.R.string.com_parse_ui_email_input_hint);
+//      usernameField.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+//      if (emailField != null) {
+//        emailField.setVisibility(View.GONE);
+//      }
+//    }
 
     if (config.getParseSignupSubmitButtonText() != null) {
       editAccountButton.setText(config.getParseSignupSubmitButtonText());
@@ -201,16 +201,18 @@ public class EditProfileFragment extends ParseLoginFragmentBase implements OnCli
   @Override
   public void onClick(View v) {
 
-    String username = usernameField.getText().toString();
+    String username = emailField.getText().toString();
     String password = passwordField.getText().toString();
     String passwordAgain = confirmPasswordField.getText().toString();
 
     String email = null;
-    if (config.isParseLoginEmailAsUsername()) {
-      email = usernameField.getText().toString();
-    } else if (emailField != null) {
-      email = emailField.getText().toString();
-    }
+//    if (config.isParseLoginEmailAsUsername()) {
+//      email = usernameField.getText().toString();
+//    } else if (emailField != null) {
+//      email = emailField.getText().toString();
+//    }
+
+    email = emailField.getText().toString();
 
     String name = null;
     if (nameField != null) {
@@ -223,13 +225,11 @@ public class EditProfileFragment extends ParseLoginFragmentBase implements OnCli
       } else {
         showToast(com.parse.ui.R.string.com_parse_ui_no_username_toast);
       }
-    } else if (password.length() == 0) {
-      showToast(com.parse.ui.R.string.com_parse_ui_no_password_toast);
-    } else if (password.length() < minPasswordLength) {
+    } else if ((password.length() != 0) && (password.length() < minPasswordLength)) {
       showToast(getResources().getQuantityString(
               com.parse.ui.R.plurals.com_parse_ui_password_too_short_toast,
               minPasswordLength, minPasswordLength));
-    } else if (passwordAgain.length() == 0) {
+    } else if ((password.length() != 0) && (passwordAgain.length() == 0)) {
       showToast(com.parse.ui.R.string.com_parse_ui_reenter_password_toast);
     } else if (!password.equals(passwordAgain)) {
       showToast(com.parse.ui.R.string.com_parse_ui_mismatch_confirm_password_toast);
@@ -256,21 +256,6 @@ public class EditProfileFragment extends ParseLoginFragmentBase implements OnCli
       if (name.length() != 0) {
         user.put(USER_OBJECT_NAME_FIELD, name);
       }
-
-      //Set account type
-
-//      String accountType;
-//      int selectedAccountRadioId = accountTypeRadioGroup.getCheckedRadioButtonId();
-//
-//      if (selectedAccountRadioId == com.parse.ui.R.id.radio_bartender_user) {
-//        accountType = "bartender";
-//      } else if (selectedAccountRadioId == com.parse.ui.R.id.radio_dj_user) {
-//        accountType = "dj";
-//      } else {
-//        accountType = "standard";
-//      }
-
-//      user.put(USER_OBJECT_ACCOUNT_TYPE, accountType);
 
       //Set login preference
 

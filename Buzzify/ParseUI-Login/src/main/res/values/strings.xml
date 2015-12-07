@@ -64,4 +64,6 @@
     <string name="bartender_user">Bartender</string>
     <string name="default_auto_login">Login automatically?</string>
     <string name="profile_photo">Profile photo</string>
+    <string name="enter_new_password">Enter new password</string>
+    <string name="reenter_new_password">Re-enter new password</string>
 </resources>
