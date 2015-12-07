@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import edu.gwu.buzzify.common.BundleKeys;
 import edu.gwu.buzzify.common.ParseUtils;
@@ -63,6 +64,25 @@ public class SpotifySearchActivity extends AppCompatActivity implements SpotifyF
         mFragmentManager = getSupportFragmentManager();
     }
 
+    /**
+     * Reference the NavDrawer's header if the user is returning from the EditProfile activity
+     * Otherwise nothing will change.
+     */
+    @Override
+    public void onResume(){
+        super.onResume();
+        Log.d(TAG, "onResume");
+        mName = ParseUtils.getUserActualName();
+        mEmail = ParseUtils.getUserEmail();
+        mProfilePicUrl = ParseUtils.getUserProfilePhotoUrl();
+
+        if(mDrawer != null){
+            mDrawer.setFullName(mName);
+            mDrawer.setEmail(mEmail);
+            mDrawer.setProfilePic(mProfilePicUrl);
+        }
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -71,8 +91,13 @@ public class SpotifySearchActivity extends AppCompatActivity implements SpotifyF
 
         //Setup searching from the action bar
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        mSearchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        searchItem.expandActionView();
+        mSearchView = (SearchView) searchItem.getActionView();
         mSearchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        mSearchView.setIconifiedByDefault(false);
+        mSearchView.requestFocus();
+
 
         return super.onCreateOptionsMenu(menu);
     }

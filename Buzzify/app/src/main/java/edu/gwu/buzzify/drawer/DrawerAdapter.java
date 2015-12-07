@@ -20,6 +20,11 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerViewHolder> {
      */
     private List<DrawerItem> mDrawerItems;
 
+    /**
+     * Reference to the header item for changing username/email/pic
+     */
+    private DrawerViewHolder mHeader;
+
     //Information for the header.
     private String mUsername, mEmail, mProfilePicUrl;
 
@@ -105,4 +110,39 @@ public class DrawerAdapter extends RecyclerView.Adapter<DrawerViewHolder> {
         return DrawerViewHolder.TYPE_ITEM;
     }
 
+    /**
+     * Used to change the full name in the header (ex. if the user goes to the EditProfile activity).
+     * @param fullname
+     */
+    public void setHeaderFullname(String fullname){
+        mUsername = fullname;
+
+        if(mHeader != null)
+            mHeader.setUsername(mUsername);
+        notifyDataSetChanged();
+    }
+
+    /**
+     * Used to change the email in the header (ex. if the user goes to the EditProfile activity).
+     * @param email
+     */
+    public void setHeaderEmail(String email){
+        mEmail = email;
+
+        if(mHeader != null)
+            mHeader.setEmail(mEmail);
+        notifyDataSetChanged();
+    }
+
+    /**
+     * Used to change the profile pic in the header (ex. if the user goes to the EditProfile activity.
+     * @param picUrl
+     */
+    public void setProfilePicUrl(String picUrl){
+        mProfilePicUrl = picUrl;
+
+        if(mHeader != null)
+            mHeader.setProfilePic(mProfilePicUrl, mContext);
+        notifyDataSetChanged();
+    }
 }

@@ -84,6 +84,25 @@ public class AdminActivity extends AppCompatActivity implements QueueFragmentInt
     }
 
     /**
+     * Reference the NavDrawer's header if the user is returning from the EditProfile activity
+     * Otherwise nothing will change.
+     */
+    @Override
+    public void onResume(){
+        super.onResume();
+        Log.d(TAG, "onResume");
+        mName = ParseUtils.getUserActualName();
+        mEmail = ParseUtils.getUserEmail();
+        mProfilePicUrl = ParseUtils.getUserProfilePhotoUrl();
+
+        if(mDrawer != null){
+            mDrawer.setFullName(mName);
+            mDrawer.setEmail(mEmail);
+            mDrawer.setProfilePic(mProfilePicUrl);
+        }
+    }
+
+    /**
      * Depending on the admin type, dequeue the item from the queue
      * @param item
      */
