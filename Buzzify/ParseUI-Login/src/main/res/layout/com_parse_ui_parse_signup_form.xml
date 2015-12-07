@@ -4,6 +4,19 @@
     android:gravity="center"
     android:orientation="vertical"    >
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/ParseLoginUI.EditText"
+        android:text="@string/profile_photo"/>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="@dimen/drawer_circlepic_size"
+        android:layout_height="@dimen/drawer_circlepic_size"
+        android:src="@drawable/logo1"
+        android:clickable="true"
+        android:id="@+id/drawerCircleView" />
+
 
     <RadioGroup
         android:id="@+id/radio_group_account_type"

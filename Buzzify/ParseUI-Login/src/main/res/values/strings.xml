@@ -63,4 +63,5 @@
     <string name="dj_user">DJ</string>
     <string name="bartender_user">Bartender</string>
     <string name="default_auto_login">Login automatically?</string>
+    <string name="profile_photo">Profile photo</string>
 </resources>

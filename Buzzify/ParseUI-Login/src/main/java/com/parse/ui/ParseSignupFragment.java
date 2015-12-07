@@ -24,6 +24,7 @@ package com.parse.ui;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.InputType;
@@ -58,6 +59,7 @@ public class ParseSignupFragment extends ParseLoginFragmentBase implements OnCli
   private ParseFile userPhotoParseFile;
   private RadioGroup accountTypeRadioGroup;
   private CheckBox loginPreferenceCheckbox;
+  private ImageView profilePhoto;
   private EditText usernameField;
   private EditText passwordField;
   private EditText confirmPasswordField;
@@ -91,10 +93,6 @@ public class ParseSignupFragment extends ParseLoginFragmentBase implements OnCli
   public View onCreateView(LayoutInflater inflater, ViewGroup parent,
                            Bundle savedInstanceState) {
 
-    //launch the camera
-    Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-    startActivityForResult(cameraIntent,CAMERA_REQUEST);
-
     Bundle args = getArguments();
     config = ParseLoginConfig.fromBundle(args, getActivity());
 
@@ -117,6 +115,7 @@ public class ParseSignupFragment extends ParseLoginFragmentBase implements OnCli
         .findViewById(R.id.signup_confirm_password_input);
     emailField = (EditText) v.findViewById(R.id.signup_email_input);
     nameField = (EditText) v.findViewById(R.id.signup_name_input);
+    profilePhoto = (ImageView) v.findViewById(R.id.drawerCircleView);
     createAccountButton = (Button) v.findViewById(R.id.create_account);
 
     usernameField.setText(username);
@@ -138,6 +137,13 @@ public class ParseSignupFragment extends ParseLoginFragmentBase implements OnCli
       createAccountButton.setText(config.getParseSignupSubmitButtonText());
     }
     createAccountButton.setOnClickListener(this);
+
+    profilePhoto.setOnClickListener(new OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        changeProfilePhoto();
+      }
+    });
 
     return v;
   }
@@ -258,6 +264,12 @@ public class ParseSignupFragment extends ParseLoginFragmentBase implements OnCli
 
     loadingStart();
 
+    //Use default image as profile photo if user does not take a new picture.
+    if (userPhotoParseFile == null) {
+      Bitmap defaultBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.logo1);
+      userPhotoParseFile = new ParseFile(USER_PHOTO_FILE, bitmapToByteArray(defaultBitmap));
+    }
+
     //send photo to parse
     userPhotoParseFile.saveInBackground(new SaveCallback() {
       @Override
@@ -271,14 +283,20 @@ public class ParseSignupFragment extends ParseLoginFragmentBase implements OnCli
   private void saveUserProfilePhoto(Intent data) {
     Bitmap userPhotoBitmap = (Bitmap) data.getExtras().get("data");
 
+    userPhotoParseFile = new ParseFile(USER_PHOTO_FILE, bitmapToByteArray(userPhotoBitmap));
+
+    //Update profile pic in signup form
+    profilePhoto.setImageBitmap(userPhotoBitmap);
+
+  }
+
+  private byte[] bitmapToByteArray(Bitmap bitmap) {
     //Bitmap to byte array code taken from http://stackoverflow.com/questions/13758560/android-bitmap-to-byte-array-and-back-skimagedecoderfactory-returned-null
 
     ByteArrayOutputStream stream = new ByteArrayOutputStream();
-    userPhotoBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-    byte[] userPhotoByteArray = stream.toByteArray();
+    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
 
-    userPhotoParseFile = new ParseFile(USER_PHOTO_FILE, userPhotoByteArray);
-
+    return stream.toByteArray();
   }
 
   private void signUpNewUser() {
@@ -315,6 +333,12 @@ public class ParseSignupFragment extends ParseLoginFragmentBase implements OnCli
         }
       }
     });
+  }
+
+  private void changeProfilePhoto() {
+    //launch the camera
+    Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+    startActivityForResult(cameraIntent, CAMERA_REQUEST);
   }
 
   @Override
